@@ -1,6 +1,6 @@
 # demiurge
 
-All-in-one AI skill for building, auditing, critiquing, and hardening code. Combines senior-dev laziness, token-efficient output, human-like writing, frontend design critique, Material Design 3, and strict coding standards into one unified workflow.
+All-in-one AI skill for building, auditing, critiquing, and hardening code. Combines senior-dev laziness, token-efficient output, human-like writing, frontend design critique, and strict coding standards into one unified workflow.
 
 ## Install
 
@@ -26,128 +26,83 @@ Clone this repo and copy `SKILL.md` and `references/` into your skill directory.
 /demiurge [mode] [target]
 ```
 
+### Default (iamstupid)
+
+No mode needed. Just type what you want in natural language:
+
+```bash
+/demiurge
+/demiurge iamstupid
+/demiurge fix the security issues in my api
+/demiurge clean up this frontend code
+/demiurge make a settings page
+/demiurge what can I delete from this repo
+```
+
+Parses intent, routes to the right modes, presents findings, asks which fixes to apply.
+
 ### Build Modes
 
-| Mode | Description |
-|------|-------------|
-| `make` | **Default.** Builds on user instructions using ponytail ladder + coding standards. |
-| `design-material` | Builds UI using Material Design 3 guidelines. Token-driven, platform-aware. |
+| Mode | Command | Description |
+|------|---------|-------------|
+| `make` | `/demiurge make [feature]` | Builds on user instructions using ponytail ladder + coding standards. |
+| `design-material` | `/demiurge design-material [target]` | **Only when explicitly requested.** Material Design 3 builder. |
 
 ### Evaluate Modes
 
-| Mode | Description |
-|------|-------------|
-| `audit` | Audits every file in the codebase. Full report: security, logic, dead code, style, architecture. |
-| `audit-frontend` | Audits frontend/UI/UX code. Design tokens, accessibility, responsive, anti-patterns. |
-| `audit-backend` | Audits backend/logic code. Security, error handling, type safety, logic correctness. |
-| `critique` | UX design review. Nielsen heuristics scoring (/40), cognitive load, persona testing. |
-| `review` | One-line code review. Severity-tagged findings: bug, risk, nit, q. |
+| Mode | Command | Description |
+|------|---------|-------------|
+| `audit` | `/demiurge audit [target]` | Full codebase audit. Security, logic, dead code, style, architecture. |
+| `audit-frontend` | `/demiurge audit-frontend [target]` | Frontend/UI/UX audit. Design tokens, a11y, responsive, anti-patterns. |
+| `audit-backend` | `/demiurge audit-backend [target]` | Backend/logic/security audit. Injection, auth, error handling, type safety. |
+| `critique` | `/demiurge critique [target]` | UX design review. Nielsen heuristics (/40), cognitive load, personas. |
+| `review` | `/demiurge review [target]` | One-line code review. Severity-tagged: bug, risk, nit, q. |
 
 ### Refine Modes
 
-| Mode | Description |
-|------|-------------|
-| `secure-code` | Fixes bugs, vulnerabilities, logic errors, and dead code directly. |
-| `humanize` | Detects AI-generated patterns in code and rewrites them to sound human. |
-| `polish` | Final quality pass. Typography, spacing, color, motion, copy, edge cases. |
-| `harden` | Production-readiness: error handling, i18n, text overflow, edge cases. |
-| `bolder` | Amplifies safe or bland designs. More decisive and committed. |
-| `quieter` | Tones down aggressive or overstimulating designs. |
+| Mode | Command | Description |
+|------|---------|-------------|
+| `secure-code` | `/demiurge secure-code [target]` | Fixes bugs, vulnerabilities, logic errors, dead code directly. |
+| `humanize` | `/demiurge humanize [target]` | Detects AI patterns in code and rewrites to sound human. |
+| `polish` | `/demiurge polish [target]` | Final quality pass. Typography, spacing, color, motion, copy. |
+| `harden` | `/demiurge harden [target]` | Production-readiness. Error handling, i18n, edge cases. |
+| `bolder` | `/demiurge bolder [target]` | Amplifies bland designs. More decisive and committed. |
+| `quieter` | `/demiurge quieter [target]` | Tones down aggressive or overstimulating designs. |
 
 ### Manage Modes
 
-| Mode | Description |
-|------|-------------|
-| `debt` | Harvests `ponytail:` comment markers into a tracked debt ledger. |
-| `compress` | Compresses natural language files into terse format to save tokens. |
-| `commit` | Generates terse conventional commit messages. |
+| Mode | Command | Description |
+|------|---------|-------------|
+| `debt` | `/demiurge debt [target]` | Harvests `ponytail:` comment markers into a debt ledger. |
+| `compress` | `/demiurge compress [filepath]` | Compresses natural language files to save tokens. |
+| `commit` | `/demiurge commit` | Generates terse conventional commit messages. |
 
-### Examples
+## How iamstupid Works
 
-```bash
-/demiurge make add user authentication with JWT
-/demiurge audit src/
-/demiurge audit-frontend src/components/
-/demiurge audit-backend src/api/
-/demiurge critique src/pages/dashboard.tsx
-/demiurge review src/auth.ts
-/demiurge design-material build a settings page
-/demiurge secure-code src/
-/demiurge humanize src/
-/demiurge polish src/components/
-/demiurge harden src/api/
-/demiurge bolder src/landing.tsx
-/demiurge quieter src/dashboard.tsx
-/demiurge debt
-/demiurge compress CLAUDE.md
-/demiurge commit
+When you call `/demiurge` or `/demiurge iamstupid [prompt]`, it:
+
+1. **Parses your words** for intent signals (security, frontend, backend, quality, build, fix, etc.)
+2. **Routes to the right modes** based on detected intent
+3. **Runs the audit/check** and generates a structured report
+4. **Asks which fixes to apply** before making any changes
+
+Example flow:
+
+```
+You: /demiurge iamstupid fix the auth in my api
+
+Me: [Parses: security + auth + api -> audit-backend]
+    [Scans src/api/ for security issues]
+    [Presents P0-P3 findings]
+    [Asks: "Which would you like me to fix?"]
+
+You: fix the JWT and CORS issues
+
+Me: [Applies fixes with secure-code]
+    [Reports what was done]
 ```
 
-## What Each Mode Does
-
-### make (default)
-
-Climbs the ponytail ladder before writing code. Ships the minimum code that works. Code first, then at most 3 lines explaining what was skipped.
-
-### audit
-
-Scans every source file for security vulnerabilities, logic errors, dead code, style violations, and architecture issues. Generates a P0-P3 severity report.
-
-### audit-frontend
-
-Checks design system compliance, accessibility (WCAG AA), responsive behavior, AI anti-patterns, and performance. Scores each dimension 0-10.
-
-### audit-backend
-
-Security-oriented audit for backend code. Checks injection, auth, crypto, error handling, type safety, logic correctness, and performance.
-
-### critique
-
-UX design review with Nielsen's 10 heuristics scoring (/40), cognitive load assessment (8-item checklist), and persona-based testing (5 personas). Generates a structured critique report with priority issues.
-
-### review
-
-One-line code review comments. Severity-tagged: bug, risk, nit, q. If code looks good, says LGTM and stops.
-
-### design-material
-
-Builds MD3-compliant UI with correct design tokens, component-first approach, platform awareness (Compose, Flutter, Web), dark theme, and responsive navigation.
-
-### secure-code
-
-Fixes everything directly: secrets to env vars, parameterized queries, input validation, dead code removal, magic numbers to constants, error handling.
-
-### humanize
-
-Detects 10 code-level AI patterns (unnecessary abstractions, boilerplate, over-documentation, performative naming, etc.) and 33 comment/documentation patterns. Rewrites them all.
-
-### polish
-
-Systematic final pass across visual alignment, typography, color contrast, interaction states, content, forms, edge cases, responsive behavior, performance, and code quality.
-
-### harden
-
-Production-readiness: error handling, i18n, text overflow, edge cases, security headers, rate limiting, graceful degradation.
-
-### bolder
-
-Amplifies bland designs by pushing one focal point using color, typography, spacing, motion, and composition within the existing design system.
-
-### quieter
-
-Reduces visual noise by desaturating secondary colors, increasing whitespace, slowing animations, and removing decorative elements.
-
-### debt
-
-Scans for `ponytail:` comment markers and generates a debt ledger with ceiling and upgrade path for each shortcut.
-
-### compress
-
-Compresses natural language files (.md, .txt) into terse format. Preserves code blocks, URLs, file paths, commands, and technical terms exactly.
-
-### commit
-
-Generates terse conventional commit messages. Subject: <=50 chars, imperative, lowercase after type. Body only when "why" isn't obvious.
+When called with no arguments, it runs a full codebase audit and asks which findings to address.
 
 ## Base Rules (all modes)
 
@@ -161,6 +116,7 @@ Every mode applies these non-negotiable rules:
 - **DESIGN.md enforcement** -- follow the design system if one exists.
 - **Modularity** -- small, cohesive, loosely coupled functions. Dependencies flow one direction.
 - **No hardcoding** -- env vars, config files, constants, parameters.
+- **Always ask before fixing.** Never auto-fix without presenting findings and getting user confirmation.
 
 ## File Structure
 
@@ -172,15 +128,17 @@ demiurge/
 ├── .claude-plugin/
 │   └── plugin.json                 # Claude Code plugin manifest
 ├── references/
+│   ├── iamstupid.md                # Auto-routing from natural language
+│   ├── human-committing.md         # Human commit flow style
 │   ├── make.md                     # Build new features
 │   ├── audit.md                    # Full codebase audit
 │   ├── audit-frontend.md           # Frontend/UI/UX audit
 │   ├── audit-backend.md            # Backend/logic/security audit
 │   ├── critique.md                 # UX design review
 │   ├── review.md                   # One-line code review
-│   ├── design-material.md          # Material Design 3 builder
+│   ├── design-material.md          # Material Design 3 (explicit only)
 │   ├── secure-code.md              # Fix bugs, vulns, dead code
-│   ├── humanize.md                 # Remove AI slop from code
+│   ├── humanize.md                 # Remove AI slop
 │   ├── polish.md                   # Final quality pass
 │   ├── harden.md                   # Production-readiness
 │   ├── bolder.md                   # Amplify bland designs
@@ -194,19 +152,7 @@ demiurge/
 │   └── structural-slop.md          # Review for agent-style slop
 └── scripts/
     ├── compress/                   # Caveman compression scripts
-    │   ├── __main__.py
-    │   ├── cli.py
-    │   ├── compress.py
-    │   ├── detect.py
-    │   ├── validate.py
-    │   └── benchmark.py
     └── audit/                      # TypeScript audit scripts
-        ├── audit-typescript-repo.sh
-        ├── audit-typescript-dead-code.sh
-        ├── audit-typescript-duplicate-code.sh
-        ├── audit-typescript-architecture.sh
-        └── lib/
-            └── common.sh
 ```
 
 ## License
