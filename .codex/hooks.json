@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|apply_patch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'demiurge: edit detected'",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
