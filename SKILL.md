@@ -15,7 +15,7 @@ description: >
   all languages: TypeScript, JavaScript, C, C++, Python, Rust, Go, Java,
   Kotlin, Swift, Dart, HTML, CSS, and more. Not for prose editing,
   translation, or general knowledge tasks.
-version: 2.3.0
+version: 2.4.0
 user-invocable: true
 argument-hint: "[mode] [target]"
 license: MIT
@@ -283,6 +283,60 @@ If a `DESIGN.md` file exists in the project root or nearest parent, read it and 
 | `references/management/debt.md` | Track ponytail shortcuts |
 | `references/management/compress.md` | Compress memory files |
 | `references/management/human-committing.md` | Human commit flow style |
+
+### Security (load when secure-code mode or security audit)
+| Reference | When to read |
+|-----------|-------------|
+| `references/security/sharp-edges.md` | Footgun APIs per language (crypto, auth, config) |
+| `references/security/insecure-defaults.md` | Fail-open vulnerability patterns |
+| `references/security/timing-side-channels.md` | Constant-time analysis for secrets |
+| `references/security/zeroization.md` | Sensitive data cleanup (C/C++/Rust) |
+| `references/security/supply-chain-risk.md` | Dependency risk assessment |
+| `references/security/smart-contract-vulnerabilities.md` | Smart contract bugs (Solana, TON, Cairo, Cosmos, Algorand, Substrate) |
+| `references/security/yara-detection.md` | Malware detection rule authoring |
+
+### Code Review (load when review, audit-frontend, audit-backend modes)
+| Reference | When to read |
+|-----------|-------------|
+| `references/review/c-review-patterns.md` | C/C++ bug classes (47+ patterns) |
+| `references/review/rust-review-patterns.md` | Rust bug classes (69 patterns) |
+| `references/review/differential-review.md` | PR/diff security review methodology |
+| `references/review/false-positive-verification.md` | Verify suspected bugs, eliminate FPs |
+| `references/review/entry-point-analysis.md` | Smart contract entry point detection |
+
+### Testing (load when making tests or reviewing test quality)
+| Reference | When to read |
+|-----------|-------------|
+| `references/testing/property-based-testing.md` | Property-based testing patterns per language |
+| `references/testing/mutation-testing.md` | Mutation testing configuration |
+
+### Static Analysis (load when using semgrep, codeql, or SARIF)
+| Reference | When to read |
+|-----------|-------------|
+| `references/analysis/semgrep-rules.md` | Custom Semgrep rule creation |
+| `references/analysis/variant-analysis.md` | Find similar vulns across codebase |
+| `references/analysis/static-analysis.md` | CodeQL, Semgrep, SARIF processing |
+
+### Methodology (load for audit process guidance)
+| Reference | When to read |
+|-----------|-------------|
+| `references/methodology/audit-context-building.md` | Build context before finding vulns |
+| `references/methodology/spec-compliance.md` | Verify code matches specification |
+
+### Tooling (load when setting up environments)
+| Reference | When to read |
+|-----------|-------------|
+| `references/tooling/devcontainer-setup.md` | DevContainer configuration |
+| `references/tooling/git-cleanup.md` | Git branch/worktree cleanup |
+| `references/tooling/sandbox-profiling.md` | macOS Seatbelt sandbox profiles |
+| `references/tooling/modern-python.md` | Python tooling (uv, ruff, ty) |
+
+### Domains (load for specialized domains)
+| Reference | When to read |
+|-----------|-------------|
+| `references/domains/defi-dimensional-analysis.md` | DeFi dimensional analysis and units |
+| `references/domains/firebase-security.md` | Firebase/Android APK security |
+| `references/domains/dwarf-debug-info.md` | DWARF debug info analysis |
 
 ### Scripts
 | Script | When to use |
