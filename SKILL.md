@@ -15,7 +15,7 @@ description: >
   all languages: TypeScript, JavaScript, C, C++, Python, Rust, Go, Java,
   Kotlin, Swift, Dart, HTML, CSS, and more. Not for prose editing,
   translation, or general knowledge tasks.
-version: 2.4.0
+version: 2.5.0
 user-invocable: true
 argument-hint: "[mode] [target]"
 license: MIT
@@ -62,7 +62,7 @@ These are not optional. They are the base layer of every mode.
 
 | Mode | Command | Description |
 |------|---------|-------------|
-| **audit** | `/demiurge audit [target]` | Audits every file. Full report: security, logic, dead code, style, architecture. |
+| **audit** | `/demiurge audit [target]` | Explicit full audit of a specific target. Reads `references/general/audit.md`. More targeted than iamstupid auto-routing. |
 | **audit-frontend** | `/demiurge audit-frontend [target]` | Audits frontend/UI/UX code. Design tokens, a11y, responsive, anti-patterns. UI apps only. |
 | **audit-backend** | `/demiurge audit-backend [target]` | Audits backend/logic code. Security, error handling, type safety, logic. |
 | **critique** | `/demiurge critique [target]` | UX design review. Nielsen heuristics scoring, cognitive load, persona testing. UI apps only. |
@@ -85,20 +85,27 @@ These are not optional. They are the base layer of every mode.
 |------|---------|-------------|
 | **debt** | `/demiurge debt [target]` | Harvests `ponytail:` comment markers into a tracked debt ledger. |
 | **compress** | `/demiurge compress [filepath]` | Compresses natural language files into terse format to save tokens. |
-| **commit** | `/demiurge commit` | Generates terse conventional commit messages. |
+| **commit** | `/demiurge commit` | Generates terse conventional commit messages. Reads `references/management/human-committing.md`. |
 
 ### Routing
 
 1. Parse the first argument as the mode.
-2. If mode is `iamstupid` or no mode given, read `references/iamstupid.md` and follow its intent-detection logic.
-3. **Detect app type first.** Is this a GUI/UI app or a backend/CLI/library?
-4. **UI guard:** Only load UI references (`references/ui/*`, `critique`, `design-material`, `bolder`, `quieter`, `polish`) when the app has a UI. For backend/CLI/library apps, skip them entirely.
-5. If mode is `design-material`, read its reference. **Do NOT auto-route** -- explicit and UI only.
-6. For all other modes, read the matching reference file from the appropriate subfolder.
-7. Execute the mode's instructions.
-8. Apply the base rules below to all output.
-9. **Always present findings before fixing.** Never auto-fix without asking the user which changes to apply.
-10. **Caveman and humanizer apply to ALL output.** Regardless of which mode is active.
+2. If mode is `iamstupid` or no mode given, read `references/iamstupid.md` and follow its intent-detection logic. This auto-detects scope and routes to the minimal set of modes.
+3. If mode is `audit` (explicit), read `references/general/audit.md`. This is a focused, explicit full audit of a specific target -- more targeted than iamstupid auto-routing.
+4. **Detect app type first.** Is this a GUI/UI app or a backend/CLI/library?
+5. **UI guard:** Only load UI references (`references/ui/*`, `critique`, `design-material`, `bolder`, `quieter`, `polish`) when the app has a UI. For backend/CLI/library apps, skip them entirely.
+6. If mode is `design-material`, read its reference. **Do NOT auto-route** -- explicit and UI only.
+7. **DESIGN.md enforcement:** If a `DESIGN.md` file exists in the project root, read `references/ui/design-defaults.md` and enforce its design system strictly.
+8. For all other modes, read the matching reference file by name from the File Reference table below.
+9. **Load contextual references** based on the active mode:
+   - `review`, `audit-frontend`, `audit-backend`, `audit` -> also load Code Review references
+   - `secure-code` -> also load Security references and the secure-code routing table
+   - `humanize` -> also load `references/standards/humanize.md`
+   - `harden` -> also load `references/standards/harden.md`
+10. Execute the mode's instructions.
+11. Apply the base rules below to all output.
+12. **Always present findings before fixing.** Never auto-fix without asking the user which changes to apply.
+13. **Caveman and humanizer apply to ALL output.** Regardless of which mode is active.
 
 ## Base Rules (ALL modes)
 
@@ -237,6 +244,7 @@ If a `DESIGN.md` file exists in the project root or nearest parent, read it and 
 | Reference | When to read |
 |-----------|-------------|
 | `references/iamstupid.md` | Auto-routing from natural language |
+| `references/ui/design-defaults.md` | DESIGN.md enforcement (loaded when DESIGN.md exists in project root) |
 
 ### UI (only when app has a UI)
 | Reference | When to read |

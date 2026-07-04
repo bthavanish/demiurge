@@ -97,11 +97,35 @@ Every mode applies these non-negotiable rules:
 
 ```
 demiurge/
-├── SKILL.md                          # Main skill definition (v2.4.0)
+├── SKILL.md                          # Main skill definition (v2.5.0)
 ├── README.md                         # This file
 ├── LICENSE                           # MIT
 ├── .claude-plugin/
 │   └── plugin.json                   # Claude Code plugin manifest
+├── .claude/                          # Claude Code adapter
+│   └── skills/demiurge/SKILL.md
+├── .opencode/                        # OpenCode adapter
+│   └── skills/demiurge/SKILL.md
+├── .cursor/                          # Cursor adapter
+│   └── skills/demiurge/SKILL.md
+├── .agents/                          # Generic/OpenAI adapter
+│   └── skills/demiurge/SKILL.md
+├── .gemini/                          # Google Gemini adapter
+│   └── skills/demiurge/SKILL.md
+├── .kiro/                            # AWS Kiro adapter
+│   └── skills/demiurge/SKILL.md
+├── .trae/                            # Trae adapter
+│   └── skills/demiurge/SKILL.md
+├── .trae-cn/                         # Trae CN adapter
+│   └── skills/demiurge/SKILL.md
+├── .codex/                           # OpenAI Codex hooks
+│   └── hooks.json
+├── .pi/                              # Pi adapter
+│   └── skills/demiurge/SKILL.md
+├── .qoder/                           # Qoder adapter
+│   └── skills/demiurge/SKILL.md
+├── .rovodev/                         # Rovo Dev (Atlassian) adapter
+│   └── skills/demiurge/SKILL.md
 ├── references/
 │   ├── iamstupid.md                  # Auto-routing from natural language
 │   ├── ui/                           # UI-only references
