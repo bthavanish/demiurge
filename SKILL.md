@@ -1,4 +1,4 @@
----
+l---
 name: demiurge
 description: >
   All-in-one skill for building, auditing, critiquing, and hardening code.
@@ -43,12 +43,19 @@ These are not optional. They are the base layer of every mode.
 
 ## Modes
 
+### Auto-Route
+
+| Mode | Command | Description |
+|------|---------|-------------|
+| **iamstupid** | `/demiurge iamstupid [prompt]` | Auto-detects what to do from natural language. Default: full audit + ask which fixes to apply. |
+| **(default)** | `/demiurge [prompt]` | Same as iamstupid. Parses intent, routes to modes, presents findings, asks before fixing. |
+
 ### Build
 
 | Mode | Command | Description |
 |------|---------|-------------|
-| **make** | `/demiurge make [feature]` | Default. Builds on user instructions using ponytail ladder + coding standards. |
-| **design-material** | `/demiurge design-material [target]` | Builds UI using Material Design 3 guidelines. Token-driven, platform-aware. |
+| **make** | `/demiurge make [feature]` | Builds on user instructions using ponytail ladder + coding standards. |
+| **design-material** | `/demiurge design-material [target]` | **Only when explicitly requested.** Builds UI using Material Design 3 guidelines. Token-driven, platform-aware. |
 
 ### Evaluate
 
@@ -81,10 +88,13 @@ These are not optional. They are the base layer of every mode.
 
 ### Routing
 
-1. Parse the first argument as the mode. Default to `make` if none given.
-2. Read the matching reference file from `references/`.
-3. Execute the mode's instructions.
-4. Apply the base rules below to all output.
+1. Parse the first argument as the mode.
+2. If mode is `iamstupid` or no mode given, read `references/iamstupid.md` and follow its intent-detection logic to route to the correct modes.
+3. If mode is `design-material`, read its reference. **Do NOT auto-route to design-material** -- it must be explicitly requested.
+4. For all other modes, read the matching reference file from `references/`.
+5. Execute the mode's instructions.
+6. Apply the base rules below to all output.
+7. **Always present findings before fixing.** Never auto-fix without asking the user which changes to apply.
 
 ## Base Rules (ALL modes)
 
@@ -205,13 +215,14 @@ If a `DESIGN.md` file exists in the project root or nearest parent, read it and 
 
 | Reference | When to read |
 |-----------|-------------|
+| `references/iamstupid.md` | Auto-routing from natural language |
 | `references/make.md` | Building new features |
 | `references/audit.md` | Full codebase audit |
 | `references/audit-frontend.md` | Frontend/UI/UX audit |
 | `references/audit-backend.md` | Backend/logic/security audit |
 | `references/critique.md` | UX design review with heuristics |
 | `references/review.md` | One-line code review |
-| `references/design-material.md` | Material Design 3 builder |
+| `references/design-material.md` | Material Design 3 builder (explicit only) |
 | `references/secure-code.md` | Fix bugs, vulns, dead code |
 | `references/humanize.md` | Remove AI slop from code |
 | `references/polish.md` | Final quality pass |
@@ -225,3 +236,4 @@ If a `DESIGN.md` file exists in the project root or nearest parent, read it and 
 | `references/design-defaults.md` | DESIGN.md enforcement |
 | `references/platform-native.md` | Platform-native alternatives |
 | `references/structural-slop.md` | Review for agent-style slop |
+| `references/human-committing.md` | Human commit flow style |
