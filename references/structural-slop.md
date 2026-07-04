@@ -28,6 +28,18 @@ AI slop means code that looks locally defensive or flexible but weakens the syst
 5. Say what should be deleted, inlined, or made required.
 6. Say whether the fix is "edit the owner", "delete the wrapper", "make the dependency required", or "rewrite the module".
 
+## Structural Hygiene
+
+Beyond agent-style slop patterns, check for structural maintenance issues:
+
+- **Dead code.** Unused files, functions, variables, types. If replaced, remove it. No commented-out code.
+- **Import hygiene.** Unused imports, stale imports, import ordering. Import what you use.
+- **Barrel files.** `index.ts` re-exports that create maintenance burden. Prefer direct imports.
+- **Circular dependencies.** Modules that import each other. Dependencies should flow one direction.
+- **Export hygiene.** Unused exports, oversized public API surface. Export only what's needed.
+
+When reviewing, separate structural hygiene from agent-style slop. Structural hygiene is about shape and dependency graph. Agent-style slop is about code quality patterns.
+
 ## Rules
 
 - If we own every caller, update callers directly.
@@ -37,3 +49,5 @@ AI slop means code that looks locally defensive or flexible but weakens the syst
 - Prefer Zod schema plus inferred type for tool/input contracts.
 - Delete adapters, wrappers, defaults, and hooks that do not protect a real public boundary.
 - Throw upward except at top-level operational boundaries.
+- Remove dead code, unused imports, and barrel files.
+- Keep dependency graph acyclic.
