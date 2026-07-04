@@ -27,6 +27,9 @@ Scan code for bugs, vulnerabilities, logic errors, and dead code. Fix everything
 - SSRF -> validate and whitelist URLs
 - Missing auth checks -> add authentication gates
 - Race conditions -> proper locking or atomic operations
+- CI/CD script injection -> sanitize `${{ github.event.* }}` in workflow files
+- AI agent prompt injection -> do not pass attacker-controlled input to AI prompts
+- Dependency CVEs -> upgrade or patch vulnerable packages
 
 ### Logic Errors
 - Null dereference -> add guards or use optional chaining

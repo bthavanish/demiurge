@@ -97,7 +97,7 @@ Every mode applies these non-negotiable rules:
 
 ```
 demiurge/
-├── SKILL.md                          # Main skill definition (v2.2.0)
+├── SKILL.md                          # Main skill definition (v2.3.0)
 ├── README.md                         # This file
 ├── LICENSE                           # MIT
 ├── .claude-plugin/
@@ -126,7 +126,8 @@ demiurge/
 │   │   ├── harden.md
 │   │   ├── humanize.md
 │   │   ├── platform-native.md
-│   │   └── structural-slop.md
+│   │   ├── structural-slop.md
+│   │   └── cicd-security.md
 │   └── management/
 │       ├── compress.md
 │       ├── debt.md
@@ -145,7 +146,9 @@ demiurge/
     ├── test/
     │   └── test-runner.sh            # Universal test runner
     ├── security/
-    │   └── security-audit.sh         # Universal security audit
+    │   ├── security-audit.sh           # Universal security audit
+    │   ├── audit-github-actions.sh     # GitHub Actions security audit
+    │   └── audit-dependencies.sh       # Dependency security audit
     └── compress/                     # Caveman compression (Python)
 ```
 

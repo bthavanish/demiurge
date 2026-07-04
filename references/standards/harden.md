@@ -44,6 +44,15 @@ Production-readiness: error handling, i18n, text overflow, edge cases.
 - No secrets in client-side code
 - Secure headers (CSP, X-Frame-Options, etc.)
 
+### CI/CD Security
+- GitHub Actions: no `pull_request_target` with PR head checkout
+- GitHub Actions: no `${{ github.event.* }}` in `run:` blocks (script injection)
+- GitHub Actions: `permissions:` block with minimum required permissions
+- GitHub Actions: no wildcard user/bot allowlists
+- GitHub Actions: AI agent prompts do not receive attacker-controlled input
+- Dependencies: no known CVEs (`npm audit`, `pip-audit`, `cargo audit`)
+- Docker: pinned base images, non-root user, multi-stage builds
+
 ### Resilience
 - Circuit breaker for external services
 - Graceful degradation when dependencies fail

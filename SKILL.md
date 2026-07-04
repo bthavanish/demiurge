@@ -7,14 +7,15 @@ description: >
   into one unified workflow. Use when the user wants to build features, audit
   codebases (frontend, backend, or full), critique UI design, apply Material
   Design 3, fix security vulnerabilities, remove AI slop, compress memory
-  files, review diffs for over-engineering, or track technical debt. Also use
+  files, review diffs for over-engineering, track technical debt, audit
+  CI/CD pipelines, and secure GitHub Actions workflows. Also use
   when the user says "demiurge", "iamstupid", "build this", "audit my code",
   "critique this", "fix security", "make it human", "review for bloat",
   "ponytail", "caveman", or any combination of build+review+secure. Covers
   all languages: TypeScript, JavaScript, C, C++, Python, Rust, Go, Java,
   Kotlin, Swift, Dart, HTML, CSS, and more. Not for prose editing,
   translation, or general knowledge tasks.
-version: 2.2.0
+version: 2.3.0
 user-invocable: true
 argument-hint: "[mode] [target]"
 license: MIT
@@ -270,10 +271,11 @@ If a `DESIGN.md` file exists in the project root or nearest parent, read it and 
 |-----------|-------------|
 | `references/standards/coding-standards.md` | Full coding best practices |
 | `references/standards/comment-standards.md` | Full comment guidelines |
-| `references/standards/harden.md` | Production-readiness |
+| `references/standards/harden.md` | Production-readiness (includes CI/CD) |
 | `references/standards/humanize.md` | Remove AI slop from code |
 | `references/standards/platform-native.md` | Platform-native alternatives |
 | `references/standards/structural-slop.md` | Review for agent-style slop |
+| `references/standards/cicd-security.md` | CI/CD and agentic security (GitHub Actions, AI agents, supply chain) |
 
 ### Management
 | Reference | When to read |
@@ -294,5 +296,7 @@ If a `DESIGN.md` file exists in the project root or nearest parent, read it and 
 | `scripts/audit/audit-java.sh` | Java codebase audit |
 | `scripts/lint/lint-all.sh` | Universal lint runner |
 | `scripts/test/test-runner.sh` | Universal test runner |
-| `scripts/security/security-audit.sh` | Universal security audit |
+| `scripts/security/security-audit.sh` | Universal security audit (secrets, injection, SQL, hardcoded paths) |
+| `scripts/security/audit-github-actions.sh` | GitHub Actions security audit (triggers, injection, AI agents, supply chain) |
+| `scripts/security/audit-dependencies.sh` | Dependency security audit (CVEs, lockfiles, Docker) |
 | `scripts/compress/` | Caveman compression (Python) |
