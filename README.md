@@ -31,31 +31,33 @@ Clone this repo and copy `SKILL.md` and `references/` into your skill directory.
 No mode needed. Just type what you want in natural language:
 
 ```bash
-/demiurge
-/demiurge iamstupid
-/demiurge fix the security issues in my api
-/demiurge clean up this frontend code
-/demiurge make a settings page
-/demiurge what can I delete from this repo
+/demiurge                           # full audit + ask which fixes to apply
+/demiurge iamstupid                 # same
+/demiurge fix the security issues in my api   # context-gather for auth, fix it
+/demiurge clean up this frontend code          # context-gather, humanize it
+/demiurge make a settings page                 # build it
+/demiurge what can I delete from this repo     # debt mode
 ```
 
-Parses intent, routes to the right modes, presents findings, asks which fixes to apply.
+When you give an exact task, it **context-gathers** for that specific change instead of running a full audit. When you give no context, it runs the full audit.
+
+**UI guard:** UI references are only loaded for apps with a UI. Backend/CLI/library apps skip all UI-related modes and references automatically.
 
 ### Build Modes
 
 | Mode | Command | Description |
 |------|---------|-------------|
 | `make` | `/demiurge make [feature]` | Builds on user instructions using ponytail ladder + coding standards. |
-| `design-material` | `/demiurge design-material [target]` | **Only when explicitly requested.** Material Design 3 builder. |
+| `design-material` | `/demiurge design-material [target]` | **Only when explicitly requested. Only for UI apps.** Material Design 3 builder. |
 
 ### Evaluate Modes
 
 | Mode | Command | Description |
 |------|---------|-------------|
 | `audit` | `/demiurge audit [target]` | Full codebase audit. Security, logic, dead code, style, architecture. |
-| `audit-frontend` | `/demiurge audit-frontend [target]` | Frontend/UI/UX audit. Design tokens, a11y, responsive, anti-patterns. |
+| `audit-frontend` | `/demiurge audit-frontend [target]` | Frontend/UI/UX audit. Design tokens, a11y, responsive, anti-patterns. UI apps only. |
 | `audit-backend` | `/demiurge audit-backend [target]` | Backend/logic/security audit. Injection, auth, error handling, type safety. |
-| `critique` | `/demiurge critique [target]` | UX design review. Nielsen heuristics (/40), cognitive load, personas. |
+| `critique` | `/demiurge critique [target]` | UX design review. Nielsen heuristics (/40), cognitive load, personas. UI apps only. |
 | `review` | `/demiurge review [target]` | One-line code review. Severity-tagged: bug, risk, nit, q. |
 
 ### Refine Modes
@@ -64,10 +66,10 @@ Parses intent, routes to the right modes, presents findings, asks which fixes to
 |------|---------|-------------|
 | `secure-code` | `/demiurge secure-code [target]` | Fixes bugs, vulnerabilities, logic errors, dead code directly. |
 | `humanize` | `/demiurge humanize [target]` | Detects AI patterns in code and rewrites to sound human. |
-| `polish` | `/demiurge polish [target]` | Final quality pass. Typography, spacing, color, motion, copy. |
+| `polish` | `/demiurge polish [target]` | Final quality pass. Typography, spacing, color, motion, copy. UI apps only. |
 | `harden` | `/demiurge harden [target]` | Production-readiness. Error handling, i18n, edge cases. |
-| `bolder` | `/demiurge bolder [target]` | Amplifies bland designs. More decisive and committed. |
-| `quieter` | `/demiurge quieter [target]` | Tones down aggressive or overstimulating designs. |
+| `bolder` | `/demiurge bolder [target]` | Amplifies bland designs. More decisive and committed. UI apps only. |
+| `quieter` | `/demiurge quieter [target]` | Tones down aggressive or overstimulating designs. UI apps only. |
 
 ### Manage Modes
 
@@ -76,33 +78,6 @@ Parses intent, routes to the right modes, presents findings, asks which fixes to
 | `debt` | `/demiurge debt [target]` | Harvests `ponytail:` comment markers into a debt ledger. |
 | `compress` | `/demiurge compress [filepath]` | Compresses natural language files to save tokens. |
 | `commit` | `/demiurge commit` | Generates terse conventional commit messages. |
-
-## How iamstupid Works
-
-When you call `/demiurge` or `/demiurge iamstupid [prompt]`, it:
-
-1. **Parses your words** for intent signals (security, frontend, backend, quality, build, fix, etc.)
-2. **Routes to the right modes** based on detected intent
-3. **Runs the audit/check** and generates a structured report
-4. **Asks which fixes to apply** before making any changes
-
-Example flow:
-
-```
-You: /demiurge iamstupid fix the auth in my api
-
-Me: [Parses: security + auth + api -> audit-backend]
-    [Scans src/api/ for security issues]
-    [Presents P0-P3 findings]
-    [Asks: "Which would you like me to fix?"]
-
-You: fix the JWT and CORS issues
-
-Me: [Applies fixes with secure-code]
-    [Reports what was done]
-```
-
-When called with no arguments, it runs a full codebase audit and asks which findings to address.
 
 ## Base Rules (all modes)
 
@@ -122,37 +97,56 @@ Every mode applies these non-negotiable rules:
 
 ```
 demiurge/
-├── SKILL.md                        # Main skill definition
-├── README.md                       # This file
-├── LICENSE                         # MIT
+├── SKILL.md                          # Main skill definition (v2.2.0)
+├── README.md                         # This file
+├── LICENSE                           # MIT
 ├── .claude-plugin/
-│   └── plugin.json                 # Claude Code plugin manifest
+│   └── plugin.json                   # Claude Code plugin manifest
 ├── references/
-│   ├── iamstupid.md                # Auto-routing from natural language
-│   ├── human-committing.md         # Human commit flow style
-│   ├── make.md                     # Build new features
-│   ├── audit.md                    # Full codebase audit
-│   ├── audit-frontend.md           # Frontend/UI/UX audit
-│   ├── audit-backend.md            # Backend/logic/security audit
-│   ├── critique.md                 # UX design review
-│   ├── review.md                   # One-line code review
-│   ├── design-material.md          # Material Design 3 (explicit only)
-│   ├── secure-code.md              # Fix bugs, vulns, dead code
-│   ├── humanize.md                 # Remove AI slop
-│   ├── polish.md                   # Final quality pass
-│   ├── harden.md                   # Production-readiness
-│   ├── bolder.md                   # Amplify bland designs
-│   ├── quieter.md                  # Tone down aggressive designs
-│   ├── debt.md                     # Track ponytail shortcuts
-│   ├── compress.md                 # Compress memory files
-│   ├── coding-standards.md         # Full coding best practices
-│   ├── comment-standards.md        # Full comment guidelines
-│   ├── design-defaults.md          # DESIGN.md enforcement
-│   ├── platform-native.md          # Platform-native alternatives
-│   └── structural-slop.md          # Review for agent-style slop
+│   ├── iamstupid.md                  # Auto-routing from natural language
+│   ├── ui/                           # UI-only references (loaded only for UI apps)
+│   │   ├── audit-frontend.md
+│   │   ├── bolder.md
+│   │   ├── critique.md
+│   │   ├── design-defaults.md
+│   │   ├── design-material.md
+│   │   ├── polish.md
+│   │   └── quieter.md
+│   ├── build/
+│   │   └── make.md
+│   ├── backend/
+│   │   ├── audit-backend.md
+│   │   └── secure-code.md
+│   ├── general/
+│   │   ├── audit.md
+│   │   └── review.md
+│   ├── standards/
+│   │   ├── coding-standards.md
+│   │   ├── comment-standards.md
+│   │   ├── harden.md
+│   │   ├── humanize.md
+│   │   ├── platform-native.md
+│   │   └── structural-slop.md
+│   └── management/
+│       ├── compress.md
+│       ├── debt.md
+│       └── human-committing.md
 └── scripts/
-    ├── compress/                   # Caveman compression scripts
-    └── audit/                      # TypeScript audit scripts
+    ├── audit/                        # Language-specific audit scripts
+    │   ├── audit-typescript-*.sh
+    │   ├── audit-python.sh
+    │   ├── audit-c.sh
+    │   ├── audit-cpp.sh
+    │   ├── audit-rust.sh
+    │   ├── audit-go.sh
+    │   └── audit-java.sh
+    ├── lint/
+    │   └── lint-all.sh               # Universal lint runner
+    ├── test/
+    │   └── test-runner.sh            # Universal test runner
+    ├── security/
+    │   └── security-audit.sh         # Universal security audit
+    └── compress/                     # Caveman compression (Python)
 ```
 
 ## License

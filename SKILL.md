@@ -1,4 +1,4 @@
-l---
+---
 name: demiurge
 description: >
   All-in-one skill for building, auditing, critiquing, and hardening code.
@@ -14,7 +14,7 @@ description: >
   all languages: TypeScript, JavaScript, C, C++, Python, Rust, Go, Java,
   Kotlin, Swift, Dart, HTML, CSS, and more. Not for prose editing,
   translation, or general knowledge tasks.
-version: 2.1.0
+version: 2.2.0
 user-invocable: true
 argument-hint: "[mode] [target]"
 license: MIT
@@ -47,7 +47,7 @@ These are not optional. They are the base layer of every mode.
 
 | Mode | Command | Description |
 |------|---------|-------------|
-| **iamstupid** | `/demiurge iamstupid [prompt]` | Auto-detects what to do from natural language. Default: full audit + ask which fixes to apply. |
+| **iamstupid** | `/demiurge iamstupid [prompt]` | Auto-detects what to do. Exact input: context-gather for that task only. No input: full audit. |
 | **(default)** | `/demiurge [prompt]` | Same as iamstupid. Parses intent, routes to modes, presents findings, asks before fixing. |
 
 ### Build
@@ -55,16 +55,16 @@ These are not optional. They are the base layer of every mode.
 | Mode | Command | Description |
 |------|---------|-------------|
 | **make** | `/demiurge make [feature]` | Builds on user instructions using ponytail ladder + coding standards. |
-| **design-material** | `/demiurge design-material [target]` | **Only when explicitly requested.** Builds UI using Material Design 3 guidelines. Token-driven, platform-aware. |
+| **design-material** | `/demiurge design-material [target]` | **Only when explicitly requested. Only for UI apps.** Builds UI using Material Design 3 guidelines. |
 
 ### Evaluate
 
 | Mode | Command | Description |
 |------|---------|-------------|
 | **audit** | `/demiurge audit [target]` | Audits every file. Full report: security, logic, dead code, style, architecture. |
-| **audit-frontend** | `/demiurge audit-frontend [target]` | Audits frontend/UI/UX code. Design tokens, a11y, responsive, anti-patterns. |
+| **audit-frontend** | `/demiurge audit-frontend [target]` | Audits frontend/UI/UX code. Design tokens, a11y, responsive, anti-patterns. UI apps only. |
 | **audit-backend** | `/demiurge audit-backend [target]` | Audits backend/logic code. Security, error handling, type safety, logic. |
-| **critique** | `/demiurge critique [target]` | UX design review. Nielsen heuristics scoring, cognitive load, persona testing. |
+| **critique** | `/demiurge critique [target]` | UX design review. Nielsen heuristics scoring, cognitive load, persona testing. UI apps only. |
 | **review** | `/demiurge review [target]` | One-line code review. Finds bugs, risks, nits. Severity-tagged. |
 
 ### Refine
@@ -73,10 +73,10 @@ These are not optional. They are the base layer of every mode.
 |------|---------|-------------|
 | **secure-code** | `/demiurge secure-code [target]` | Fixes bugs, vulnerabilities, logic errors, and dead code directly. |
 | **humanize** | `/demiurge humanize [target]` | Detects AI-generated patterns in code and rewrites them to sound human. |
-| **polish** | `/demiurge polish [target]` | Final quality pass. Typography, spacing, color, motion, copy, edge cases. |
+| **polish** | `/demiurge polish [target]` | Final quality pass. Typography, spacing, color, motion, copy, edge cases. UI apps only. |
 | **harden** | `/demiurge harden [target]` | Production-readiness: error handling, i18n, text overflow, edge cases. |
-| **bolder** | `/demiurge bolder [target]` | Amplifies safe or bland designs. More decisive and committed. |
-| **quieter** | `/demiurge quieter [target]` | Tones down aggressive or overstimulating designs. |
+| **bolder** | `/demiurge bolder [target]` | Amplifies safe or bland designs. More decisive and committed. UI apps only. |
+| **quieter** | `/demiurge quieter [target]` | Tones down aggressive or overstimulating designs. UI apps only. |
 
 ### Manage
 
@@ -89,12 +89,15 @@ These are not optional. They are the base layer of every mode.
 ### Routing
 
 1. Parse the first argument as the mode.
-2. If mode is `iamstupid` or no mode given, read `references/iamstupid.md` and follow its intent-detection logic to route to the correct modes.
-3. If mode is `design-material`, read its reference. **Do NOT auto-route to design-material** -- it must be explicitly requested.
-4. For all other modes, read the matching reference file from `references/`.
-5. Execute the mode's instructions.
-6. Apply the base rules below to all output.
-7. **Always present findings before fixing.** Never auto-fix without asking the user which changes to apply.
+2. If mode is `iamstupid` or no mode given, read `references/iamstupid.md` and follow its intent-detection logic.
+3. **Detect app type first.** Is this a GUI/UI app or a backend/CLI/library?
+4. **UI guard:** Only load UI references (`references/ui/*`, `critique`, `design-material`, `bolder`, `quieter`, `polish`) when the app has a UI. For backend/CLI/library apps, skip them entirely.
+5. If mode is `design-material`, read its reference. **Do NOT auto-route** -- explicit and UI only.
+6. For all other modes, read the matching reference file from the appropriate subfolder.
+7. Execute the mode's instructions.
+8. Apply the base rules below to all output.
+9. **Always present findings before fixing.** Never auto-fix without asking the user which changes to apply.
+10. **Caveman and humanizer apply to ALL output.** Regardless of which mode is active.
 
 ## Base Rules (ALL modes)
 
@@ -229,27 +232,67 @@ If a `DESIGN.md` file exists in the project root or nearest parent, read it and 
 
 ## File Reference
 
+### Routing
 | Reference | When to read |
 |-----------|-------------|
 | `references/iamstupid.md` | Auto-routing from natural language |
-| `references/make.md` | Building new features |
-| `references/audit.md` | Full codebase audit |
-| `references/audit-frontend.md` | Frontend/UI/UX audit |
-| `references/audit-backend.md` | Backend/logic/security audit |
-| `references/critique.md` | UX design review with heuristics |
-| `references/review.md` | One-line code review |
-| `references/design-material.md` | Material Design 3 builder (explicit only) |
-| `references/secure-code.md` | Fix bugs, vulns, dead code |
-| `references/humanize.md` | Remove AI slop from code |
-| `references/polish.md` | Final quality pass |
-| `references/harden.md` | Production-readiness |
-| `references/bolder.md` | Amplify bland designs |
-| `references/quieter.md` | Tone down aggressive designs |
-| `references/debt.md` | Track ponytail shortcuts |
-| `references/compress.md` | Compress memory files |
-| `references/coding-standards.md` | Full coding best practices |
-| `references/comment-standards.md` | Full comment guidelines |
-| `references/design-defaults.md` | DESIGN.md enforcement |
-| `references/platform-native.md` | Platform-native alternatives |
-| `references/structural-slop.md` | Review for agent-style slop |
-| `references/human-committing.md` | Human commit flow style |
+
+### UI (only when app has a UI)
+| Reference | When to read |
+|-----------|-------------|
+| `references/ui/audit-frontend.md` | Frontend/UI/UX audit |
+| `references/ui/critique.md` | UX design review with heuristics |
+| `references/ui/design-material.md` | Material Design 3 builder (explicit only) |
+| `references/ui/design-defaults.md` | DESIGN.md enforcement |
+| `references/ui/bolder.md` | Amplify bland designs |
+| `references/ui/quieter.md` | Tone down aggressive designs |
+| `references/ui/polish.md` | Final quality pass |
+
+### Build
+| Reference | When to read |
+|-----------|-------------|
+| `references/build/make.md` | Building new features |
+
+### Backend
+| Reference | When to read |
+|-----------|-------------|
+| `references/backend/audit-backend.md` | Backend/logic/security audit |
+| `references/backend/secure-code.md` | Fix bugs, vulns, dead code |
+
+### General
+| Reference | When to read |
+|-----------|-------------|
+| `references/general/audit.md` | Full codebase audit |
+| `references/general/review.md` | One-line code review |
+
+### Standards
+| Reference | When to read |
+|-----------|-------------|
+| `references/standards/coding-standards.md` | Full coding best practices |
+| `references/standards/comment-standards.md` | Full comment guidelines |
+| `references/standards/harden.md` | Production-readiness |
+| `references/standards/humanize.md` | Remove AI slop from code |
+| `references/standards/platform-native.md` | Platform-native alternatives |
+| `references/standards/structural-slop.md` | Review for agent-style slop |
+
+### Management
+| Reference | When to read |
+|-----------|-------------|
+| `references/management/debt.md` | Track ponytail shortcuts |
+| `references/management/compress.md` | Compress memory files |
+| `references/management/human-committing.md` | Human commit flow style |
+
+### Scripts
+| Script | When to use |
+|--------|-------------|
+| `scripts/audit/audit-typescript-*.sh` | TypeScript codebase audit |
+| `scripts/audit/audit-python.sh` | Python codebase audit |
+| `scripts/audit/audit-c.sh` | C codebase audit |
+| `scripts/audit/audit-cpp.sh` | C++ codebase audit |
+| `scripts/audit/audit-rust.sh` | Rust codebase audit |
+| `scripts/audit/audit-go.sh` | Go codebase audit |
+| `scripts/audit/audit-java.sh` | Java codebase audit |
+| `scripts/lint/lint-all.sh` | Universal lint runner |
+| `scripts/test/test-runner.sh` | Universal test runner |
+| `scripts/security/security-audit.sh` | Universal security audit |
+| `scripts/compress/` | Caveman compression (Python) |
