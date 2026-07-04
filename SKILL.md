@@ -8,13 +8,13 @@ description: >
   codebases (frontend, backend, or full), critique UI design, apply Material
   Design 3, fix security vulnerabilities, remove AI slop, compress memory
   files, review diffs for over-engineering, or track technical debt. Also use
-  when the user says "demiurge", "build this", "audit my code", "critique
-  this", "fix security", "make it human", "review for bloat", "ponytail",
-  "caveman", or any combination of build+review+secure. Covers all languages:
-  TypeScript, JavaScript, C, C++, Python, Rust, Go, Java, Kotlin, Swift, Dart,
-  HTML, CSS, and more. Not for prose editing, translation, or general
-  knowledge tasks.
-version: 2.0.0
+  when the user says "demiurge", "iamstupid", "build this", "audit my code",
+  "critique this", "fix security", "make it human", "review for bloat",
+  "ponytail", "caveman", or any combination of build+review+secure. Covers
+  all languages: TypeScript, JavaScript, C, C++, Python, Rust, Go, Java,
+  Kotlin, Swift, Dart, HTML, CSS, and more. Not for prose editing,
+  translation, or general knowledge tasks.
+version: 2.1.0
 user-invocable: true
 argument-hint: "[mode] [target]"
 license: MIT
@@ -126,6 +126,22 @@ The ladder runs *after* you understand the problem, not instead of it. Read the 
 - Mark deliberate simplifications with a `ponytail:` comment naming the ceiling and upgrade path.
 
 **When NOT to be lazy:** input validation at trust boundaries, error handling that prevents data loss, security measures, accessibility basics, anything explicitly requested. Never lazy about understanding the problem.
+
+**Intensity levels:**
+
+| Level | What change |
+|-------|------------|
+| **lite** | Build what's asked, but name the lazier alternative in one line. User picks. |
+| **full** | The ladder enforced. Stdlib and native first. Shortest diff, shortest explanation. Default. |
+| **ultra** | YAGNI extremist. Deletion before addition. Ship the one-liner and challenge the rest of the requirement in the same breath. |
+
+Switch: `/demiurge ponytail [lite|full|ultra]`. Default: **full**.
+
+**Testing requirement:** Non-trivial logic (a branch, a loop, a parser, a money/security path) leaves ONE runnable check behind, the smallest thing that fails if the logic breaks: an `assert`-based `demo()`/`__main__` self-check or one small `test_*.py`. No frameworks, no fixtures, no per-function suites unless asked. Trivial one-liners need no test, YAGNI applies to tests too.
+
+**Output rule:** If the explanation is longer than the code, delete the explanation. Every paragraph defending a simplification is complexity smuggled back in as prose. Pattern: `[code] -> skipped: [X], add when [Y].`
+
+**Boundaries:** Ponytail governs what you build. Caveman governs how you talk. They are independent. You can have ponytail lite + caveman ultra, or ponytail ultra + caveman lite. Each has its own intensity level and deactivation.
 
 ### Caveman Output
 
