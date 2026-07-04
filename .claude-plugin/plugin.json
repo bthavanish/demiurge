@@ -1,0 +1,18 @@
+{
+  "name": "demiurge",
+  "description": "Master skill for building, auditing, and hardening code. Combines senior-dev laziness, token-efficient output, human-like writing, and strict design standards into one unified workflow.",
+  "version": "0.1.0",
+  "author": "Thavanish brijesh",
+  "license": "MIT",
+  "repository": "https://github.com/thavanish-brijesh/demiurge",
+  "homepage": "https://github.com/thavanish-brijesh/demiurge",
+  "keywords": [
+    "security",
+    "audit",
+    "code-review",
+    "humanizer",
+    "material-design",
+    "coding-standards",
+    "senior-dev"
+  ]
+}
