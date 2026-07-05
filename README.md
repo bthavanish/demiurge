@@ -218,7 +218,7 @@ These six skills form the foundation of demiurge's base rules (ponytail ladder, 
 | **impeccable** | pbakaus | [pbakaus/impeccable](https://github.com/pbakaus/impeccable) | 23 UI commands (bolder, quieter, polish, critique, harden, animate, colorize, typeset, layout, delight, etc.), brand/product register awareness |
 | **ponytail** | Dietrich Gebert | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | 7-rung ladder, intensity levels (lite/full/ultra), debt ledger, ponytail markers, testing requirement |
 | **material-3-skill** | hamen | [hamen/material-3-skill](https://github.com/hamen/material-3-skill) | Material Design 3 tokens, components, theming, M3 Expressive |
-| **maintainable-typescript** | miguelspizza | [miguelspizza/skills](https://github.com/miguelspizza/skills) | Structural slop detection, dead code patterns, import cleanup, barrel file detection |
+| **maintainable-typescript & write-good-docs** | miguelspizza | [miguelspizza/skills](https://github.com/miguelspizza/skills) | Structural slop detection, dead code patterns, import cleanup, barrel file detection |
 | **write-good-docs** | miguelspizza | [miguelspizza/skills](https://github.com/miguelspizza/skills) | Diataxis framework, audience-specific README templates, AI writing trope cleanup |
 
 ### Security and Analysis Skills (Trail of Bits)
