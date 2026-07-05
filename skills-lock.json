@@ -1,4 +1,11 @@
 {
   "version": 1,
-  "skills": {}
+  "skills": {
+    "demiurge": {
+      "source": "bthavanish/demiurge",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/demiurge/SKILL.md",
+      "computedHash": "8116b1938aa7b0f33aada3d6b0b26fccee5a8478a92a5c865e4fffc02ba04485"
+    }
+  }
 }

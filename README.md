@@ -89,6 +89,14 @@ When you give an exact task, it **context-gathers** for that specific change ins
 | `compress` | `/demiurge compress [filepath]` | Compresses natural language files to save tokens. |
 | `commit` | `/demiurge commit` | Generates terse conventional commit messages. |
 
+### Docs Modes
+
+| Mode | Command | Description |
+|------|---------|-------------|
+| `docs` | `/demiurge docs [target]` | Writes or restructures documentation using Diataxis framework. |
+| `readme` | `/demiurge readme [target]` | Creates or improves README files with audience-specific templates. |
+| `prose` | `/demiurge prose [target]` | Edits machine-generated prose to remove AI writing tropes. |
+
 ## Base Rules (all modes)
 
 Every mode applies these non-negotiable rules:
@@ -211,6 +219,7 @@ These six skills form the foundation of demiurge's base rules (ponytail ladder, 
 | **ponytail** | Dietrich Gebert | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | 7-rung ladder, intensity levels (lite/full/ultra), debt ledger, ponytail markers, testing requirement |
 | **material-3-skill** | hamen | [hamen/material-3-skill](https://github.com/hamen/material-3-skill) | Material Design 3 tokens, components, theming, M3 Expressive |
 | **maintainable-typescript** | miguelspizza | [miguelspizza/skills](https://github.com/miguelspizza/skills) | Structural slop detection, dead code patterns, import cleanup, barrel file detection |
+| **write-good-docs** | miguelspizza | [miguelspizza/skills](https://github.com/miguelspizza/skills) | Diataxis framework, audience-specific README templates, AI writing trope cleanup |
 
 ### Security and Analysis Skills (Trail of Bits)
 

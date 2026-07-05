@@ -87,6 +87,14 @@ These are not optional. They are the base layer of every mode.
 | **compress** | `/demiurge compress [filepath]` | Compresses natural language files into terse format to save tokens. |
 | **commit** | `/demiurge commit` | Generates terse conventional commit messages. Reads `references/management/human-committing.md`. |
 
+### Docs
+
+| Mode | Command | Description |
+|------|---------|-------------|
+| **docs** | `/demiurge docs [target]` | Writes or restructures documentation using Diataxis framework. Auto-classifies task and loads relevant references. |
+| **readme** | `/demiurge readme [target]` | Creates or improves README files with audience-specific templates and checklists. |
+| **prose** | `/demiurge prose [target]` | Edits machine-generated prose to remove AI writing tropes. Loads `references/write-good-docs/references/ai-writing-tropes/`. |
+
 ### Routing
 
 1. Parse the first argument as the mode.
@@ -102,6 +110,9 @@ These are not optional. They are the base layer of every mode.
    - `secure-code` -> also load Security references and the secure-code routing table
    - `humanize` -> also load `references/standards/humanize.md`
    - `harden` -> also load `references/standards/harden.md`
+   - `docs` -> also load `references/write-good-docs/` (Diataxis framework)
+   - `readme` -> also load `references/write-good-docs/references/crafting-effective-readmes/`
+   - `prose` -> also load `references/write-good-docs/references/ai-writing-tropes/`
 10. Execute the mode's instructions.
 11. Apply the base rules below to all output.
 12. **Always present findings before fixing.** Never auto-fix without asking the user which changes to apply.
@@ -345,6 +356,30 @@ If a `DESIGN.md` file exists in the project root or nearest parent, read it and 
 | `references/domains/defi-dimensional-analysis.md` | DeFi dimensional analysis and units |
 | `references/domains/firebase-security.md` | Firebase/Android APK security |
 | `references/domains/dwarf-debug-info.md` | DWARF debug info analysis |
+
+### Documentation (load when docs, readme, or prose mode)
+| Reference | When to read |
+|-----------|-------------|
+| `references/write-good-docs/SKILL.md` | Documentation task router and defaults |
+| `references/write-good-docs/references/diataxis/compass.md` | Classify docs into tutorial/how-to/reference/explanation |
+| `references/write-good-docs/references/diataxis/how-to-use-diataxis.md` | Diataxis framework overview |
+| `references/write-good-docs/references/diataxis/tutorials.md` | Tutorial writing guide |
+| `references/write-good-docs/references/diataxis/how-to-guides.md` | How-to guide writing guide |
+| `references/write-good-docs/references/diataxis/reference.md` | Reference writing guide |
+| `references/write-good-docs/references/diataxis/explanation.md` | Explanation writing guide |
+| `references/write-good-docs/references/crafting-effective-readmes/SKILL.md` | README writing guide |
+| `references/write-good-docs/references/crafting-effective-readmes/section-checklist.md` | README section checklist |
+| `references/write-good-docs/references/crafting-effective-readmes/style-guide.md` | README style guide |
+| `references/write-good-docs/references/crafting-effective-readmes/templates/oss.md` | Open source README template |
+| `references/write-good-docs/references/crafting-effective-readmes/templates/internal.md` | Internal README template |
+| `references/write-good-docs/references/crafting-effective-readmes/templates/personal.md` | Personal README template |
+| `references/write-good-docs/references/ai-writing-tropes/SKILL.md` | AI writing trope detection and cleanup |
+| `references/write-good-docs/references/ai-writing-tropes/references/word-choice.md` | AI word choice tropes |
+| `references/write-good-docs/references/ai-writing-tropes/references/sentence-structure.md` | AI sentence structure tropes |
+| `references/write-good-docs/references/ai-writing-tropes/references/paragraph-structure.md` | AI paragraph structure tropes |
+| `references/write-good-docs/references/ai-writing-tropes/references/tone.md` | AI tone tropes |
+| `references/write-good-docs/references/ai-writing-tropes/references/formatting.md` | AI formatting tropes |
+| `references/write-good-docs/references/ai-writing-tropes/references/composition.md` | AI composition tropes |
 
 ### Scripts
 | Script | When to use |
