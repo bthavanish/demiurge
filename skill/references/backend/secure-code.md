@@ -1,6 +1,6 @@
 # Secure Code Mode
 
-Scan code for bugs, vulnerabilities, logic errors, and dead code. Fix everything. This mode combines the audit checks with immediate remediation.
+Scan code for bugs, vulnerabilities, logic errors, and dead code. Present findings, get user confirmation, then fix only what they approve. This mode combines the audit checks with remediation.
 
 ## Workflow
 
@@ -25,11 +25,13 @@ Scan code for bugs, vulnerabilities, logic errors, and dead code. Fix everything
 
 3. **Scan.** Apply every check from the backend audit plus language-specific checks from loaded references.
 
-4. **Fix.** For each finding, apply the fix directly. Do not just report -- fix.
+4. **Present findings.** Show all findings grouped by severity. Ask the user which ones to fix. Never auto-fix without confirmation.
 
-5. **Verify.** Run lint, typecheck, or tests after fixing. Ensure the fix does not break anything.
+5. **Fix.** Apply fixes only for the issues the user selects.
 
-6. **Report.** Summarize what was found and fixed.
+6. **Verify.** Run lint, typecheck, or tests after fixing. Ensure the fix does not break anything.
+
+7. **Report.** Summarize what was fixed and what was skipped.
 
 ## What This Mode Fixes
 
@@ -114,7 +116,20 @@ Scan code for bugs, vulnerabilities, logic errors, and dead code. Fix everything
 
 ## Output
 
-After fixing, output:
+After presenting findings and getting user confirmation:
+
+```
+## Findings
+
+| # | Severity | File | Issue |
+|---|----------|------|-------|
+| 1 | P0 | path/file:line | [issue] |
+| 2 | P1 | ... | ... |
+
+Which of these would you like me to fix?
+```
+
+After applying fixes:
 
 ```
 ## Fixes Applied
@@ -122,18 +137,19 @@ After fixing, output:
 | # | File | Issue | Fix |
 |---|------|-------|-----|
 | 1 | path/file:line | [issue] | [what was done] |
-| 2 | ... | ... | ... |
 
 ## Skipped
 
-[list of findings that were intentionally not fixed, with reasoning]
+[list of findings that were not selected or intentionally not fixed, with reasoning]
 ```
 
 Code changes are applied directly to the files. No separate patch files.
 
 ## Rules
 
-- Fix everything. Do not leave findings unfixed unless there is a clear reason (would break API, requires architectural change, user explicitly said not to).
+- Always present findings before fixing. Never auto-fix without user confirmation.
+- Group related findings. Don't dump raw output.
+- Fix only what the user selects.
 - If a fix would require a large refactor, fix what you can and note the rest as "requires refactor."
 - Never introduce new vulnerabilities while fixing existing ones.
 - Run available tests/lint after fixing.

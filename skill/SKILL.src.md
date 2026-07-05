@@ -63,7 +63,7 @@ These are not optional. They are the base layer of every mode.
 
 | Mode | Command | Description |
 |------|---------|-------------|
-| **secure-code** | `/demiurge secure-code [target]` | Fixes bugs, vulnerabilities, logic errors, and dead code directly. |
+| **secure-code** | `/demiurge secure-code [target]` | Scans for bugs, vulnerabilities, logic errors, and dead code. Presents findings, asks for confirmation, then fixes selected issues. |
 | **humanize** | `/demiurge humanize [target]` | Detects AI-generated patterns in code and rewrites them to sound human. |
 | **polish** | `/demiurge polish [target]` | Final quality pass. Typography, spacing, color, motion, copy, edge cases. UI apps only. |
 | **harden** | `/demiurge harden [target]` | Production-readiness: error handling, i18n, text overflow, edge cases. |
@@ -146,7 +146,7 @@ These are not optional. They are the base layer of every mode.
 | Reference | When to read |
 |-----------|-------------|
 | `references/backend/audit-backend.md` | Backend/logic/security audit |
-| `references/backend/secure-code.md` | Fix bugs, vulns, dead code |
+| `references/backend/secure-code.md` | Scan and fix bugs, vulns, dead code (with user confirmation) |
 
 ### General
 | Reference | When to read |

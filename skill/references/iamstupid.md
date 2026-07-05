@@ -18,9 +18,10 @@ User: /demiurge fix the auth in my api
 
 You: [Detect: backend/CLI app -> skip UI refs]
      [Gather context: read src/auth/, src/api/]
-     [Route: audit-backend (security) + secure-code]
-     [Fix auth issues]
-     [Report]
+     [Route: audit-backend (security)]
+     [Present findings]
+     [Ask: "Which of these would you like me to fix?"]
+     [Apply fixes for selected issues]
 ```
 
 ```
@@ -63,7 +64,7 @@ Before loading any references, detect the app type:
 Scan the user's words for these signals:
 
 **Security signals:** "secure", "vulnerability", "hack", "injection", "auth", "password", "token", "secret", "exploit", "attack", "CVE"
--> Route: `audit-backend` (security focus) or `secure-code` (fix immediately)
+-> Route: `audit-backend` (security focus), then offer `secure-code` if user wants fixes
 
 **Frontend/UI signals:** "frontend", "UI", "component", "page", "layout", "design", "responsive", "mobile", "CSS", "style", "button", "form", "dashboard", "landing"
 -> Route: `audit-frontend` or `critique` if it's about design quality
@@ -82,7 +83,7 @@ Scan the user's words for these signals:
 -> Route: `audit` (full) or targeted audit based on other signals
 
 **Fix signals:** "fix", "bug", "error", "broken", "crash", "failing", "issue"
--> Route: `secure-code` or `review` first, then fix
+-> Route: `review` first to identify issues, then offer `secure-code` to fix selected findings
 
 **Production signals:** "deploy", "production", "ship", "launch", "ready", "hardening"
 -> Route: `harden`
@@ -103,10 +104,10 @@ If the user's prompt triggers multiple signals, run multiple modes:
 
 ```
 "audit my frontend code for security" -> audit-frontend + audit-backend (security)
-"make it look better and fix bugs" -> polish + secure-code
+"make it look better and fix bugs" -> polish + review, then secure-code if user approves
 "clean up this mess" -> humanize + review
 "ship this to production" -> harden + audit
-"fix the memory leak in my C parser" -> secure-code (only loads C audit script)
+"fix the memory leak in my C parser" -> review (C patterns), then secure-code if user approves
 ```
 
 ## Reference Loading Guard
