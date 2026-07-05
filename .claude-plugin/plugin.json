@@ -8,18 +8,5 @@
   "license": "MIT",
   "repository": "https://github.com/thavanish-brijesh/demiurge",
   "homepage": "https://github.com/thavanish-brijesh/demiurge",
-  "keywords": [
-    "security",
-    "audit",
-    "code-review",
-    "humanizer",
-    "material-design",
-    "coding-standards",
-    "senior-dev",
-    "caveman",
-    "ponytail",
-    "hardening",
-    "critique"
-  ],
   "skills": "./.claude/skills/"
 }

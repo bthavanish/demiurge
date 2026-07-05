@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Generated files
+dist/
+build/
+
+# Build artifacts
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Claude Code local state
+.claude/projects/
+.claude/scheduled_tasks.lock
+.claude/settings.local.json
+
+# Environment
+.env
+.env.local
+
+# OpenCode
+.opencode/node_modules/
+.opencode/package-lock.json
