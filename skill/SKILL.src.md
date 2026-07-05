@@ -1,20 +1,11 @@
 ---
 name: demiurge
 description: >
-  All-in-one skill for building, auditing, critiquing, and hardening code.
-  Combines senior-dev laziness, token-efficient output, human-like writing,
-  frontend design critique, Material Design 3, and strict coding standards
-  into one unified workflow. Use when the user wants to build features, audit
-  codebases (frontend, backend, or full), critique UI design, apply Material
-  Design 3, fix security vulnerabilities, remove AI slop, compress memory
-  files, review diffs for over-engineering, track technical debt, audit
-  CI/CD pipelines, and secure GitHub Actions workflows. Also use
-  when the user says "demiurge", "iamstupid", "build this", "audit my code",
-  "critique this", "fix security", "make it human", "review for bloat",
-  "ponytail", "caveman", or any combination of build+review+secure. Covers
-  all languages: TypeScript, JavaScript, C, C++, Python, Rust, Go, Java,
-  Kotlin, Swift, Dart, HTML, CSS, and more. Not for prose editing,
-  translation, or general knowledge tasks.
+  All-in-one coding skill: build, audit, critique, harden code. Uses ponytail
+  (minimal code), caveman (terse output), humanizer (anti-AI-slop), and strict
+  coding standards. Trigger on "demiurge", "iamstupid", "audit", "make",
+  "critique", "fix security", "humanize", "review", or any build+review+secure
+  request. All languages.
 version: 2.5.0
 user-invocable: true
 argument-hint: "[mode] [target]"
@@ -95,7 +86,7 @@ These are not optional. They are the base layer of every mode.
 | **readme** | `/demiurge readme [target]` | Creates or improves README files with audience-specific templates and checklists. |
 | **prose** | `/demiurge prose [target]` | Edits machine-generated prose to remove AI writing tropes. Loads `references/write-good-docs/references/ai-writing-tropes/`. |
 
-### Routing
+## Routing
 
 1. Parse the first argument as the mode.
 2. If mode is `iamstupid` or no mode given, read `references/iamstupid.md` and follow its intent-detection logic. This auto-detects scope and routes to the minimal set of modes.
@@ -113,143 +104,21 @@ These are not optional. They are the base layer of every mode.
    - `docs` -> also load `references/write-good-docs/` (Diataxis framework)
    - `readme` -> also load `references/write-good-docs/references/crafting-effective-readmes/`
    - `prose` -> also load `references/write-good-docs/references/ai-writing-tropes/`
-10. Execute the mode's instructions.
-11. Apply the base rules below to all output.
-12. **Always present findings before fixing.** Never auto-fix without asking the user which changes to apply.
-13. **Caveman and humanizer apply to ALL output.** Regardless of which mode is active.
-
-## Base Rules (ALL modes)
-
-These apply regardless of which mode is active. They are non-negotiable.
-
-### The Ponytail Ladder
-
-Before writing any code, climb the ladder. Stop at the first rung that holds:
-
-1. **Does this need to exist at all?** Speculative need = skip it. Say so in one line.
-2. **Already in this codebase?** A helper, util, type, or pattern that already lives here -> reuse it. Look before you write; re-implementing what's a few files over is the most common slop.
-3. **Stdlib does it?** Use it.
-4. **Native platform feature covers it?** `<input type="date">` over a picker lib, CSS over JS, DB constraint over app code.
-5. **Already-installed dependency solves it?** Use it. Never add a new one for what a few lines can do.
-6. **Can it be one line?** One line.
-7. **Only then:** the minimum code that works.
-
-The ladder runs *after* you understand the problem, not instead of it. Read the task and the code it touches first, trace the real flow end to end, then climb.
-
-**Bug fix = root cause, not symptom.** Before editing, grep every caller of the function you're about to touch. The lazy fix IS the root-cause fix: one guard in the shared function is a smaller diff than a guard in every caller.
-
-**Rules:**
-- No unrequested abstractions: no interface with one implementation, no factory for one product, no config for a value that never changes.
-- No boilerplate, no scaffolding "for later", later can scaffold for itself.
-- Deletion over addition. Boring over clever.
-- Fewest files possible. Shortest working diff wins.
-- Complex request? Ship the lazy version and question it in the same response.
-- Two stdlib options, same size? Take the one correct on edge cases.
-- Mark deliberate simplifications with a `ponytail:` comment naming the ceiling and upgrade path.
-
-**When NOT to be lazy:** input validation at trust boundaries, error handling that prevents data loss, security measures, accessibility basics, anything explicitly requested. Never lazy about understanding the problem.
-
-**Intensity levels:**
-
-| Level | What change |
-|-------|------------|
-| **lite** | Build what's asked, but name the lazier alternative in one line. User picks. |
-| **full** | The ladder enforced. Stdlib and native first. Shortest diff, shortest explanation. Default. |
-| **ultra** | YAGNI extremist. Deletion before addition. Ship the one-liner and challenge the rest of the requirement in the same breath. |
-
-Switch: `/demiurge ponytail [lite|full|ultra]`. Default: **full**.
-
-**Testing requirement:** Non-trivial logic (a branch, a loop, a parser, a money/security path) leaves ONE runnable check behind, the smallest thing that fails if the logic breaks: an `assert`-based `demo()`/`__main__` self-check or one small `test_*.py`. No frameworks, no fixtures, no per-function suites unless asked. Trivial one-liners need no test, YAGNI applies to tests too.
-
-**Output rule:** If the explanation is longer than the code, delete the explanation. Every paragraph defending a simplification is complexity smuggled back in as prose. Pattern: `[code] -> skipped: [X], add when [Y].`
-
-**Boundaries:** Ponytail governs what you build. Caveman governs how you talk. They are independent. You can have ponytail lite + caveman ultra, or ponytail ultra + caveman lite. Each has its own intensity level and deactivation.
-
-### Caveman Output
-
-Drop articles, filler words, pleasantries, hedging. Use fragments. Short synonyms.
-
-**Rules:**
-- Preserve exactly: code blocks, inline code, URLs, file paths, commands, technical terms, API names, error strings.
-- Never invent abbreviations (cfg/impl/req/res/fn) -- zero token saved, reader has to decode.
-- Standard well-known tech acronyms OK (DB/API/HTTP).
-- No causal arrows.
-- Pattern: `[thing] [action] [reason]. [next step].`
-- No self-reference. Never name or announce the style.
-- Preserve user's dominant language. Compress the style, not the language.
-- Code and commit messages are written in normal prose, not caveman.
-
-**Auto-clarity:** Drop to normal prose for security warnings, irreversible action confirmations, and multi-step sequences where fragment order risks misread. Resume caveman after.
-
-**Intensity levels:**
-
-| Level | Change |
-|-------|--------|
-| **lite** | No filler/hedging. Keep articles + full sentences. Professional but tight. |
-| **full** | Drop articles, fragments OK, short synonyms. Default. |
-| **ultra** | Strip conjunctions when cause-then-effect unambiguous. One word when one word enough. |
-
-Switch: `/demiurge caveman [lite|full|ultra]`. Default: **full**.
-
-### Humanizer
-
-All prose output must pass the humanizer check. The 33 AI writing patterns to avoid:
-
-**Content:** significance inflation, notability emphasis, superficial -ing analyses, promotional language, vague attributions, formulaic challenges.
-
-**Language:** AI vocabulary (delve, tapestry, vibrant, crucial, pivotal, leverage, utilize, streamline, facilitate), copula avoidance (serves as/stands as instead of is), negative parallelisms, rule of three, synonym cycling, false ranges, passive voice.
-
-**Style:** em dashes (HARD BAN), boldface overuse, inline-header lists, title case headings, emojis in headings, curly quotes, hyphenated word overuse, authority tropes, signposting, fragmented headers, diff-anchored writing, punchlines, aphorisms, rhetorical openers.
-
-**Communication:** collaborative artifacts ("I hope this helps!"), knowledge-cutoff disclaimers, sycophantic tone.
-
-**Filler:** filler phrases ("in order to"), excessive hedging, generic positive conclusions.
-
-**Rules:**
-- The final rewrite contains no em dashes or en dashes. Any hit means the draft isn't done.
-- No rule-of-three in listing features.
-- Code must not contain AI patterns: no unnecessary abstractions, no factory-for-one-product, no interface-with-one-implementation, no config-for-a-value-that-never-changes.
-
-### Coding Standards
-
-- **KISS.** Most readable, straightforward solution. No over-engineering.
-- **SRP.** Every function, class, module does exactly one thing.
-- **Descriptive names.** No single-letter vars (except loop counters). No arbitrary names (data2, temp, flag).
-- **No magic numbers.** Declare named constants.
-- **Default to immutability.** Make variables final/const wherever practical.
-- **Self-documenting code.** Rely on naming, not comments.
-- **Portable.** No hard-coded URLs, paths, IPs, credentials. Use config/env vars.
-- **No hallucinations.** Only standard language features or explicitly provided libraries.
-- **Error handling.** Never swallow exceptions silently. Handle errors at appropriate boundaries.
-- **Testing.** Assert on observable outcomes, not mock call counts. Mock external systems, not your own modules.
-- **Dead code.** If replaced, remove it. No commented-out code. No backwards-compat shims for internal code.
-- **Structure is expensive.** Preserve contracts, tests, and invariants. Prefer deletion over shims.
-- **SSOT.** Every piece of knowledge has one authoritative source. Derive everything else.
-- **No type casts.** Do not use `as` to make code compile. Fix types at the source.
-- **Build deep modules.** Hide meaningful complexity behind a small interface. One cohesive file over a forest of tiny helpers.
-
-### Comment Standards
-
-- Comment the **why**, not the **what**. Never explain standard syntax.
-- Code is documentation through descriptive naming.
-- Comment edge cases and workarounds with reasoning.
-- Use standard doc formats (JSDoc, JavaDoc, docstrings) for public APIs.
-- No version history, author names, or commented-out dead code.
-- Keep comments brief, placed directly above the code they describe.
-- Mark intentional simplifications with `ponytail:` comments.
-- No AI slop in comments: no significance inflation, no promotional language, no filler, no hedging, no rule of three, no AI vocabulary.
-
-### DESIGN.md Enforcement
-
-If a `DESIGN.md` file exists in the project root or nearest parent, read it and enforce its design system strictly. Do not deviate from declared tokens, color roles, typography scales, spacing, or component patterns.
-
-### Modularity and No Hardcoding
-
-- Break large tasks into small, highly cohesive, loosely coupled helper functions.
-- Each module has a single responsibility. Dependencies flow one direction. No circular imports.
-- Never hardcode values unless the user explicitly says so. Use env vars, config files, constants, parameters.
+10. **Always load base rules** for every mode: `references/base/ponytail.md`, `references/base/caveman.md`, `references/base/humanizer.md`, `references/base/standards.md`.
+11. Execute the mode's instructions.
+12. Apply the base rules to all output.
+13. **Always present findings before fixing.** Never auto-fix without asking the user which changes to apply.
+14. **Caveman and humanizer apply to ALL output.** Regardless of which mode is active.
 
 ## File Reference
+
+### Base (always load)
+| Reference | When to read |
+|-----------|-------------|
+| `references/base/ponytail.md` | Ponytail ladder and intensity levels |
+| `references/base/caveman.md` | Caveman output rules and intensity levels |
+| `references/base/humanizer.md` | AI writing pattern detection and rewrite rules |
+| `references/base/standards.md` | Coding standards, comment standards, DESIGN.md enforcement, modularity |
 
 ### Routing
 | Reference | When to read |
