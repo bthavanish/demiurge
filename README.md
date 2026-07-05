@@ -1,6 +1,6 @@
 # demiurge
 
-<img src="assets/demiurge.png" width="300" alt="demiurge">
+<div align="center"><img src="assets/demiurge.png" width="300" alt="demiurge"></div>
 
 All-in-one AI skill for building, auditing, critiquing, and hardening code. Combines senior-dev laziness, token-efficient output, human-like writing, frontend design critique, and strict coding standards into one unified workflow.
 
