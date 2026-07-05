@@ -36,7 +36,15 @@ Based on Wikipedia's "Coding Best Practices" and system instructions for code ge
 - Code must be self-documenting through clear naming and structure.
 - Only comment the **why** (business logic, edge cases, reasons for a specific approach).
 - Never comment the **what** (do not explain standard language syntax or basic operations).
-- See `references/comment-standards.md` for the full comment guidelines.
+- Code is documentation: use highly descriptive variable and function names so inline comments are rarely needed.
+- Document edge cases and workarounds explicitly. Explain why the edge case exists and how the logic mitigates it.
+- Use standard documentation formats for public APIs (JSDoc, docstrings, JavaDoc, godoc, `///`).
+- Function docs must state: what it achieves, inputs, outputs, exceptions thrown.
+- Never include version history, author names, "last modified" timestamps in comments (use Git).
+- No commented-out code blocks. If code is no longer needed, delete it entirely.
+- Keep comments brief. Place comments directly above the line or block they describe.
+- Mark intentional simplifications with `ponytail:` comments explaining the ceiling and upgrade path.
+- Apply humanizer patterns to comments: no significance inflation, promotional language, filler, hedging, rule of three, or AI vocabulary (delve, leverage, utilize, streamline, facilitate).
 
 ## Portability
 

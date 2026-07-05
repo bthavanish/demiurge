@@ -108,6 +108,65 @@ Final quality pass. Catches the small details that separate good work from great
 - Consistent naming conventions
 - No unused imports or variables
 
+## Amplifying Bland Designs
+
+Use when a design is safe to the point of forgettable. Amplify within the existing design system -- do not create a new one.
+
+### Register Awareness
+- **Brand context:** Stronger brand presence, more distinctive visual identity, larger brand color surfaces, bolder typography for headlines, more personality in motion.
+- **Product context:** Stronger hierarchy, clearer weight contrast, sharper information density, more decisive interactive states. Product bolder builds trust through clarity, not spectacle.
+
+### Process
+1. Assess current state. Diagnose specific weaknesses, not general vibes.
+2. Lock to design system. Stay within existing tokens.
+3. Plan amplification. Pick one focal point to push hardest.
+4. Set risk budget. Amplification that breaks recognition is failure.
+
+### Amplification Levers
+- **Color:** Push primary color higher on commitment axis. Use brand color at larger surfaces. Increase contrast. Add a deliberate accent.
+- **Typography:** Increase heading size. Tighten letter-spacing on display text. Use weight contrast more aggressively. Break grid with oversized type for focal points.
+- **Spacing:** Increase white space around focal elements. Use asymmetric spacing for visual tension.
+- **Motion:** Add entrance animations that build anticipation. Staggered reveals for lists. Micro-interactions on hover/click.
+- **Composition:** One dominant element. Scale contrast. Break symmetry deliberately. Add depth through elevation.
+
+### Anti-Patterns
+- Scroll-fade-rise on every section (the saturated AI default).
+- Decorative motion without purpose.
+- New color palette. Bolder within the system, not a new system.
+- Everything is the focal point. Pick one thing.
+- Bolder means bigger. Sometimes it means tighter, sharper, denser.
+
+## Toning Down Aggressive Designs
+
+Use when a design is overstimulating. Reduce visual noise while preserving intent.
+
+### Intensity Diagnostic
+
+| Source | Signal | Fix |
+|--------|--------|-----|
+| Color saturation | Fully saturated backgrounds, competing accents | Desaturate to 70-85%, use tinted grays |
+| Contrast extremes | Very dark on very light, harsh borders | Soften contrast, reduce border weight |
+| Visual weight | Heavy fonts, thick borders, large icons | Reduce font weights, thin borders, smaller icons |
+| Animation excess | Entrance animations on every section, parallax | Remove non-essential motion, shorter distances |
+| Complexity | Too many elements, competing hierarchies | Reduce element count, strengthen hierarchy |
+| Scale jumps | Inconsistent size ratios | Align to consistent scale, reduce jumps |
+
+### Reduction Levers
+- **Color:** Shift from fully saturated to 70-85%. Use tinted grays. Never gray on color. Reduce competing accent colors.
+- **Typography:** Reduce font weights (900->600, 700->500). Use 2-3 weights max. Increase line height. Remove decorative text treatments.
+- **Spacing:** More whitespace between sections. Increase padding. Separate competing elements with distance.
+- **Motion:** Reduce animation distances (10-20px instead of 40px). Ease-out-quart for calmer exits. Remove animations not serving clear purpose. Respect `prefers-reduced-motion`.
+- **Borders and Lines:** Reduce thickness. Decrease opacity. Remove when spacing provides enough separation.
+- **Composition:** Reduce element count. Group related elements. Use consistent alignment. Remove decorative noise.
+
+### Verification
+- Visual noise reduced. Design feels calmer.
+- Focal point still most visible.
+- Content still communicates clearly.
+- Not boring -- controlled.
+- Contrast ratios still pass.
+- No information lost.
+
 ## Polish Checklist
 
 - [ ] All interactive states styled (default, hover, focus, active, disabled)

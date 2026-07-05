@@ -1,5 +1,55 @@
 # Static Analysis Reference
 
+## Variant Analysis
+
+Find variants of a known vulnerability across a codebase.
+
+### 5-Step Process
+
+1. **Understand the original issue.** Root cause (not symptom), required conditions, exploitability.
+   > "This vulnerability exists because [UNTRUSTED DATA] reaches [DANGEROUS OPERATION] without [REQUIRED PROTECTION]."
+
+2. **Create an exact match.** `rg -n "exact_vulnerable_code_here"` -- verify it matches ONLY the original.
+
+3. **Identify abstraction points.**
+
+   | Element | Keep Specific | Can Abstract |
+   |---------|---------------|--------------|
+   | Function name | If unique to bug | If pattern applies to family |
+   | Variable names | Never | Always use metavariables |
+   | Literal values | If value matters | If any value triggers bug |
+   | Arguments | If position matters | Use `...` wildcards |
+
+4. **Iteratively generalize.** Change ONE element at a time. Run pattern, review matches, classify TP/FP. Stop when FP rate exceeds ~50%.
+
+5. **Analyze and triage.** For each match: location, confidence (High/Med/Low), exploitability, priority.
+
+### Abstraction Ladder
+
+| Level | Pattern | Matches | False Positives | Use Case |
+|-------|---------|---------|-----------------|----------|
+| 0: Exact Match | Literal vulnerable code | 1 | 0 | Verify specific fix |
+| 1: Variable Abstraction | Replace variable names with wildcards | 3-5 | Low | Find copy-paste variants |
+| 2: Structural Abstraction | Generalize structure | 10-30 | Medium | Audit a component |
+| 3: Semantic Abstraction | Taint mode (any source to any sink) | 50-100+ | High | Full security assessment |
+
+### Critical Pitfalls
+- **Narrow scope:** Always search the ENTIRE codebase, not just the module with the original bug.
+- **Too-specific pattern:** Enumerate ALL semantically related attributes/functions.
+- **Single vulnerability class:** List all possible manifestations before searching.
+- **Missing edge cases:** Test with null, undefined, empty collections, boundary conditions.
+
+### FP Management
+
+| Context | Acceptable FP Rate |
+|---------|-------------------|
+| Automated CI blocking | <5% |
+| Developer warning | <20% |
+| Security audit triage | <50% |
+| Research/exploration | <80% |
+
+---
+
 ## CodeQL Setup
 
 ### Supported Languages
@@ -7,99 +57,56 @@ Python, JavaScript/TypeScript, Go, Java/Kotlin, C/C++, C#, Ruby, Swift.
 
 ### Essential Principles
 
-1. **Database quality is non-negotiable.** A database that builds is not automatically good. Always run quality assessment (file counts, baseline LoC, extractor errors) and compare against expected source files.
-2. **Data extensions catch what CodeQL misses.** Even projects using standard frameworks have custom wrappers around database calls, request parsing, or shell execution. Skipping extensions means missing vulnerabilities in project-specific code paths.
-3. **Explicit suite references prevent silent query dropping.** Never pass pack names directly to `codeql database analyze` — each pack's `defaultSuiteFile` applies hidden filters. Always generate a custom `.qls` suite file.
-4. **Zero findings needs investigation, not celebration.** Zero results can indicate poor database quality, missing models, wrong query packs, or silent suite filtering.
+1. **Database quality is non-negotiable.** Always run quality assessment and compare against expected source files.
+2. **Data extensions catch what CodeQL misses.** Even projects using standard frameworks have custom wrappers.
+3. **Explicit suite references prevent silent query dropping.** Never pass pack names directly -- always generate a custom `.qls` suite file.
+4. **Zero findings needs investigation, not celebration.** Can indicate poor database quality, missing models, wrong query packs.
 
 ### Output Directory Structure
 
 ```
 $OUTPUT_DIR/
-├── rulesets.txt                 # Selected query packs
-├── codeql.db/                   # CodeQL database
-├── build.log                    # Build log
-├── diagnostics/                 # Diagnostic queries and CSVs
-├── extensions/                  # Data extension YAMLs
-├── raw/                         # Unfiltered analysis output
+├── rulesets.txt
+├── codeql.db/
+├── build.log
+├── diagnostics/
+├── extensions/
+├── raw/
 │   ├── results.sarif
 │   └── <mode>.qls
-└── results/                     # Final results
+└── results/
     └── results.sarif
 ```
 
 ### Database Quality Assessment
 
 ```bash
-# Baseline lines of code
 codeql database print-baseline -- "$DB_NAME"
-
-# Source archive file count
 unzip -Z1 "$DB_NAME/src.zip" 2>/dev/null | wc -l
-
-# Extraction errors
-find "$DB_NAME/diagnostic/extractors" -name '*.jsonl' \
-  -exec cat {} + 2>/dev/null | grep -c '^{'
-
-# Check database is finalized
+find "$DB_NAME/diagnostic/extractors" -name '*.jsonl' -exec cat {} + 2>/dev/null | grep -c '^{'
 grep '^finalised:' "$DB_NAME/codeql-database.yml"
 ```
-
-**Quality criteria:**
 
 | Metric | Good | Poor |
 |--------|------|------|
 | Baseline LoC | > 0, proportional to project | 0 or far below expected |
 | Project source files | Close to expected | < 50% of expected |
 | Extractor errors | 0 or < 5% of files | > 5% of files |
-| Finalized | `true` | `false` (incomplete build) |
-
-### Quality Improvement Steps
-
-1. Adjust source root
-2. Fix "no source code seen" (cached build — force clean rebuild)
-3. Install type stubs / additional dependencies
-4. Adjust extractor options (C++ TRAP headers, Java JDK version)
-
-## CodeQL Quality
+| Finalized | `true` | `false` |
 
 ### Suite Hierarchy
 
 | Suite | False Positives | Use Case |
 |-------|-----------------|----------|
-| `security-extended` | Low | Default — security audits |
+| `security-extended` | Low | Default -- security audits |
 | `security-and-quality` | Medium | Comprehensive review |
 | `security-experimental` | Higher | Research, vulnerability hunting |
 
-> `security-and-quality` and `security-experimental` are complementary. For maximum coverage (run-all mode), import both.
-
-**Usage:** `codeql/<lang>-queries:codeql-suites/<lang>-security-extended.qls`
-
 ### Query Packs
 
-**Official suites:**
-- `security-extended` — Low FP, default for security audits
-- `security-and-quality` — Excludes `experimental/` query paths
-- `security-experimental` — Includes experimental, excludes code quality
-
-**Trail of Bits packs:**
-```bash
-codeql pack download trailofbits/cpp-queries
-codeql pack download trailofbits/go-queries
-codeql pack download trailofbits/java-queries
-```
-
-**Community packs:**
-```bash
-codeql pack download GitHubSecurityLab/CodeQL-Community-Packs-<Lang>
-```
-
-### Scan Modes
-
-| Mode | Description | Suite Reference |
-|------|-------------|-----------------|
-| **Run all** | All queries from all installed packs via `security-and-quality` + `security-experimental` | Custom `.qls` |
-| **Important only** | Security queries filtered by precision and security-severity threshold | Custom `.qls` with post-filter |
+**Official:** `security-extended`, `security-and-quality`, `security-experimental`
+**Trail of Bits:** `codeql pack download trailofbits/{cpp,go,java}-queries`
+**Community:** `codeql pack download GitHubSecurityLab/CodeQL-Community-Packs-<Lang>`
 
 ### Analysis Command
 
@@ -113,24 +120,17 @@ codeql database analyze $DB_NAME \
   -- "$SUITE_FILE"
 ```
 
-**Flags:**
-- `--model-packs` — for installed model packs
-- `--additional-packs` — for in-repo model packs or standalone extensions
-- `--threat-model` — `local`, `remote`, or `all`
+---
 
-## Semgrep Scanning Modes
+## Semgrep Scanning
 
-### Mode: Run All
+### Modes
 
-Full scan with all rulesets and severity levels. No filtering applied.
+**Run all:** All rulesets, no filtering.
+**Important only:** Pre-filter by severity + post-filter by metadata (category=security, confidence/MEDIUM+, impact/MEDIUM+).
 
-### Mode: Important Only
+### Post-Filter jq Command
 
-Two filter layers:
-1. **Pre-filter**: `--severity MEDIUM --severity HIGH --severity CRITICAL`
-2. **Post-filter**: JSON metadata — keeps only `category=security`, `confidence∈{MEDIUM,HIGH}`, `impact∈{MEDIUM,HIGH}`
-
-**Post-filter jq command:**
 ```bash
 jq '{
   results: [.results[] |
@@ -148,108 +148,41 @@ jq '{
 }' "$f" > "${f%.json}-important.json"
 ```
 
-Third-party rules without metadata pass all filters by default.
+### Rulesets
 
-### Semgrep Rulesets
-
-**Always include:**
-- `p/security-audit` — Comprehensive vulnerability detection
-- `p/secrets` — Hardcoded credentials, API keys
-
-**Language-specific (add primary + framework rulesets):**
+**Always include:** `p/security-audit`, `p/secrets`
 
 | Language | Primary | Frameworks |
 |----------|---------|------------|
 | Python | `p/python` | `p/django`, `p/flask`, `p/fastapi` |
 | JavaScript | `p/javascript` | `p/react`, `p/nodejs`, `p/express`, `p/nextjs` |
 | TypeScript | `p/typescript` | `p/react`, `p/nodejs`, `p/express`, `p/nextjs` |
-| Go | `p/golang` | — |
+| Go | `p/golang` | -- |
 | Java | `p/java` | `p/spring`, `p/findsecbugs` |
-| C/C++ | `p/c` | — |
-| Rust | `p/rust` | — |
+| C/C++ | `p/c` | -- |
+| Rust | `p/rust` | -- |
 | PHP | `p/php` | `p/symfony`, `p/laravel` |
 | Ruby | `p/ruby` | `p/rails` |
 
-**Infrastructure:**
-- `p/dockerfile`, `p/terraform`, `p/kubernetes`, `p/cloudformation`, `p/github-actions`
+**Infrastructure:** `p/dockerfile`, `p/terraform`, `p/kubernetes`, `p/cloudformation`, `p/github-actions`
+**Third-party:** Trail of Bits, 0xdea (C/C++), Decurity (Solidity/Cairo/Rust)
 
-**Third-party (required, not optional):**
-- Trail of Bits (Python, Go, Ruby, JS/TS, Terraform)
-- 0xdea (C, C++)
-- Decurity (Solidity, Cairo, Rust)
+**Key:** Always use `--metrics=off` -- Semgrep sends telemetry by default.
 
-### Key Semgrep Principle
-
-Always use `--metrics=off` — Semgrep sends telemetry by default. Every `semgrep` command must include this flag.
+---
 
 ## SARIF Processing
-
-### SARIF 2.1.0 Structure
-
-```
-sarifLog
-├── version: "2.1.0"
-└── runs[]
-    ├── tool
-    │   ├── driver
-    │   │   ├── name
-    │   │   └── rules[]
-    │   └── extensions[]
-    ├── results[]
-    │   ├── ruleId
-    │   ├── level (error/warning/note)
-    │   ├── message.text
-    │   ├── locations[].physicalLocation
-    │   ├── fingerprints{}
-    │   └── partialFingerprints{}
-    └── artifacts[]
-```
 
 ### Common jq Queries
 
 ```bash
-# Total findings
-jq '[.runs[].results[]] | length' results.sarif
-
-# Count by severity
-jq 'reduce .runs[].results[] as $r ({}; .[$r.level] += 1)' results.sarif
-
-# List unique rule IDs
-jq '[.runs[].results[].ruleId] | unique | sort' results.sarif
-
-# Count per rule
-jq '[.runs[].results[]] | group_by(.ruleId) | map({rule: .[0].ruleId, count: length}) | sort_by(-.count)' results.sarif
-
-# File and line for each result
-jq '.runs[].results[] | {
-  rule: .ruleId,
-  file: .locations[0].physicalLocation.artifactLocation.uri,
-  line: .locations[0].physicalLocation.region.startLine
-}' results.sarif
-
-# Unique affected files
-jq '[.runs[].results[].locations[].physicalLocation.artifactLocation.uri] | unique | sort' results.sarif
-
-# Top 10 most frequent rules
-jq '[.runs[].results[]] | group_by(.ruleId) | map({rule: .[0].ruleId, count: length}) | sort_by(-.count) | .[0:10]' results.sarif
-
-# Files with most issues
-jq '[.runs[].results[] | .locations[0].physicalLocation.artifactLocation.uri] | group_by(.) | map({file: .[0], count: length}) | sort_by(-.count) | .[0:10]' results.sarif
-
-# Filter by specific rule
-jq --arg rule "SQL_INJECTION" '.runs[].results[] | select(.ruleId == $rule)' results.sarif
-
-# Filter by file path
-jq --arg file "auth" '.runs[].results[] | select(.locations[].physicalLocation.artifactLocation.uri | contains($file))' results.sarif
-
-# CSV output
-jq -r '.runs[].results[] | [.ruleId, .level, .locations[0].physicalLocation.artifactLocation.uri, .locations[0].physicalLocation.region.startLine, .message.text] | @csv' results.sarif
-
-# Merge multiple SARIF files
-jq -s '{version: "2.1.0", runs: [.[].runs[]]}' file1.sarif file2.sarif > merged.sarif
-
-# Extract errors only
-jq '.runs[].results = [.runs[].results[] | select(.level == "error")]' results.sarif > errors-only.sarif
+jq '[.runs[].results[]] | length' results.sarif                    # Total findings
+jq 'reduce .runs[].results[] as $r ({}; .[$r.level] += 1)' results.sarif  # Count by severity
+jq '[.runs[].results[].ruleId] | unique | sort' results.sarif       # Unique rule IDs
+jq '[.runs[].results[]] | group_by(.ruleId) | map({rule: .[0].ruleId, count: length}) | sort_by(-.count)' results.sarif  # Count per rule
+jq '.runs[].results[] | {rule: .ruleId, file: .locations[0].physicalLocation.artifactLocation.uri, line: .locations[0].physicalLocation.region.startLine}' results.sarif  # File/line per result
+jq -r '.runs[].results[] | [.ruleId, .level, .locations[0].physicalLocation.artifactLocation.uri, .locations[0].physicalLocation.region.startLine, .message.text] | @csv' results.sarif  # CSV output
+jq -s '{version: "2.1.0", runs: [.[].runs[]]}' file1.sarif file2.sarif > merged.sarif  # Merge SARIF files
 ```
 
 ### Deduplication
@@ -307,8 +240,8 @@ def normalize_path(uri: str, base_path: str = "") -> str:
 
 ### Key Principles
 
-1. **Validate first** — Check SARIF structure before processing
-2. **Handle optionals** — Many fields are optional; use defensive access
-3. **Normalize paths** — Tools report paths differently; normalize early
-4. **Fingerprint wisely** — Combine multiple strategies for stable deduplication
-5. **Stream large files** — Use ijson for 100MB+ files
+1. Validate first -- check SARIF structure before processing
+2. Handle optionals -- many fields are optional; use defensive access
+3. Normalize paths -- tools report paths differently; normalize early
+4. Fingerprint wisely -- combine multiple strategies for stable deduplication
+5. Stream large files -- use ijson for 100MB+ files

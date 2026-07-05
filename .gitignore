@@ -28,3 +28,5 @@ Thumbs.db
 # OpenCode
 .opencode/node_modules/
 .opencode/package-lock.json
+*pycache*
+*.pyc*
