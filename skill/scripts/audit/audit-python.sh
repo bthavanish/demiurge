@@ -1,21 +1,31 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # audit-python.sh -- Python codebase audit script
 # Checks: dead code, imports, type hints, complexity, security patterns
 set -euo pipefail
 
 DIR="${1:-.}"
-FIND="find "$DIR" -name '*.py' -not -path '*/node_modules/*' -not -path '*/.venv/*' -not -path '*/venv/*' -not -path '*/__pycache__/*'"
+
+# Find Python source files excluding common non-project directories
+find_py_files() {
+  find "$DIR" -name '*.py' \
+    -not -path '*/node_modules/*' \
+    -not -path '*/.venv/*' \
+    -not -path '*/venv/*' \
+    -not -path '*/__pycache__/*' \
+    -not -path '*/.git/*' \
+    -not -path '*/build/*'
+}
 
 echo "=== Python Audit: $DIR ==="
 echo ""
 
 # Dead code (unused imports)
 echo "--- Unused Imports ---"
-$FIND -exec grep -l "^import \|^from " {} \; | while read f; do
-  python3 -c "
+find_py_files -print0 | xargs -0 -I{} python3 -c "
 import ast, sys
+fname = sys.argv[1]
 try:
-    tree = ast.parse(open('$f').read())
+    tree = ast.parse(open(fname).read())
     imports = []
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -27,32 +37,31 @@ try:
     names = [node.id for node in ast.walk(tree) if isinstance(node, ast.Name)]
     unused = [i for i in imports if i not in names and i != '*']
     for u in unused:
-        print(f'$f: unused import: {u}')
+        print(f'{fname}: unused import: {u}')
 except: pass
-" 2>/dev/null
-done
+" {} 2>/dev/null || true
 
 # Functions without type hints
 echo ""
 echo "--- Missing Type Hints ---"
-$FIND -exec grep -n "def [a-zA-Z_]*(" {} \; | grep -v "->" | head -20
+find_py_files -exec grep -n "def [a-zA-Z_]*(" {} + 2>/dev/null | grep -v "->" | head -20 || true
 
 # TODO/FIXME/HACK markers
 echo ""
 echo "--- Debt Markers ---"
-$FIND -exec grep -n "TODO\|FIXME\|HACK\|XXX\|ponytail:" {} \;
+find_py_files -exec grep -n "TODO\|FIXME\|HACK\|XXX" {} + 2>/dev/null || true
 
 # Security patterns
 echo ""
 echo "--- Security Patterns ---"
-$FIND -exec grep -n "eval(\|exec(\|subprocess.*shell=True\|os\.system(\|pickle\." {} \;
+find_py_files -exec grep -n "eval(\|exec(\|subprocess.*shell=True\|os\.system(\|pickle\." {} + 2>/dev/null || true
 
 # Complexity
 echo ""
 echo "--- Long Functions (>50 lines) ---"
-$FIND -exec python3 -c "
-import ast
-for fname in ['$f']:
+find_py_files -print0 | xargs -0 -I{} python3 -c "
+import ast, sys
+for fname in sys.argv[1:]:
     try:
         tree = ast.parse(open(fname).read())
         for node in ast.walk(tree):
@@ -62,5 +71,4 @@ for fname in ['$f']:
                 if length > 50:
                     print(f'{fname}:{node.lineno}: {node.name}() is {length} lines')
     except: pass
-" 2>/dev/null;
-done
+" {} 2>/dev/null || true

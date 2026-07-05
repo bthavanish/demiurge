@@ -55,12 +55,26 @@ def main():
         print_table([benchmark_pair(orig, comp)])
         return
 
-    # Glob mode: repo_root/tests/caveman-compress/
-    # __file__ lives at <repo_root>/skills/caveman-compress/scripts/benchmark.py
-    # Walk up four dirs: scripts → caveman-compress → skills → repo_root.
-    tests_dir = Path(__file__).resolve().parents[3] / "tests" / "caveman-compress"
-    if not tests_dir.exists():
-        print(f"❌ Tests dir not found: {tests_dir}")
+    # Glob mode: look for tests/caveman-compress/ relative to this file's location
+    # Try multiple possible locations for the tests directory
+    script_dir = Path(__file__).resolve().parent
+    possible_tests_dirs = [
+        script_dir.parent.parent / "tests" / "caveman-compress",  # skill-based layout
+        script_dir.parent / "tests" / "caveman-compress",         # flat layout
+        Path.cwd() / "tests" / "caveman-compress",               # current directory
+    ]
+
+    tests_dir = None
+    for d in possible_tests_dirs:
+        if d.exists():
+            tests_dir = d
+            break
+
+    if tests_dir is None:
+        print("❌ Tests dir not found. Searched:")
+        for d in possible_tests_dirs:
+            print(f"   {d}")
+        print("\nUsage: python benchmark.py <original.md> <compressed.md>")
         sys.exit(1)
 
     rows = []

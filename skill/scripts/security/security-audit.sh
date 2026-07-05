@@ -1,34 +1,49 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # security-audit.sh -- Universal security audit
 # Checks for common vulnerabilities across languages
 set -euo pipefail
 
 DIR="${1:-.}"
 echo "=== Security Audit: $DIR ==="
+echo ""
+
+# Build find command with exclusions
+find_code_files() {
+  find "$DIR" \
+    \( -name '*.ts' -o -name '*.js' -o -name '*.py' -o -name '*.go' -o -name '*.rs' -o -name '*.java' -o -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.hpp' \) \
+    -not -path '*/node_modules/*' \
+    -not -path '*/.git/*' \
+    -not -path '*/build/*' \
+    -not -path '*/target/*' \
+    -not -path '*/vendor/*' \
+    -not -path '*/.venv/*' \
+    -not -path '*/venv/*' \
+    -not -path '*/__pycache__/*'
+}
 
 # Secrets/credentials
 echo "--- Secrets in Code ---"
-grep -rn "password\s*=\s*['\"]\|secret\s*=\s*['\"]\|api_key\s*=\s*['\"]\|token\s*=\s*['\"]\|AWS_\|PRIVATE_KEY" "$DIR" --include='*.ts' --include='*.js' --include='*.py' --include='*.go' --include='*.rs' --include='*.java' --include='*.c' --include='*.cpp' --include='*.h' 2>/dev/null | grep -v "node_modules\|\.git\|test\|spec\|example" || echo "none found"
+find_code_files -exec grep -n "password\s*=\s*['\"]\|secret\s*=\s*['\"]\|api_key\s*=\s*['\"]\|token\s*=\s*['\"]\|AWS_\|PRIVATE_KEY" {} + 2>/dev/null | grep -vi "test\|spec\|example\|mock" || echo "  none found"
 
 # Injection patterns
 echo ""
 echo "--- Injection Patterns ---"
-grep -rn "eval(\|exec(\|execSync(\|system(\|popen(\|shell=True\|subprocess.*shell" "$DIR" --include='*.ts' --include='*.js' --include='*.py' --include='*.go' --include='*.java' --include='*.c' --include='*.cpp' 2>/dev/null | grep -v "node_modules\|\.git\|test\|spec" || echo "none found"
+find_code_files -exec grep -n "eval(\|exec(\|execSync(\|system(\|popen(\|shell=True\|subprocess.*shell" {} + 2>/dev/null | grep -vi "test\|spec" || echo "  none found"
 
 # Unsafe deserialization
 echo ""
 echo "--- Unsafe Deserialization ---"
-grep -rn "pickle\|yaml.load(\|JSON.parse\|unserialize\|ObjectInputStream\|from_json" "$DIR" --include='*.ts' --include='*.js' --include='*.py' --include='*.go' --include='*.java' 2>/dev/null | grep -v "node_modules\|\.git\|test\|spec" || echo "none found"
+find_code_files -exec grep -n "pickle\|yaml.load(\|JSON.parse\|unserialize\|ObjectInputStream\|from_json" {} + 2>/dev/null | grep -vi "test\|spec" || echo "  none found"
 
 # SQL injection
 echo ""
 echo "--- SQL Injection Risk ---"
-grep -rn "query.*+\|f\".*SELECT\|f\".*INSERT\|f\".*UPDATE\|f\".*DELETE\|format.*SELECT" "$DIR" --include='*.ts' --include='*.js' --include='*.py' --include='*.go' --include='*.java' 2>/dev/null | grep -v "node_modules\|\.git\|test\|spec" || echo "none found"
+find_code_files -exec grep -n "query.*+\|f\".*SELECT\|f\".*INSERT\|f\".*UPDATE\|f\".*DELETE\|format.*SELECT" {} + 2>/dev/null | grep -vi "test\|spec" || echo "  none found"
 
 # Hardcoded paths/URLs
 echo ""
 echo "--- Hardcoded Paths ---"
-grep -rn "localhost:\|127\.0\.0\.1\|/home/\|/Users/\|C:\\\\" "$DIR" --include='*.ts' --include='*.js' --include='*.py' --include='*.go' --include='*.rs' --include='*.java' 2>/dev/null | grep -v "node_modules\|\.git\|test\|spec\|README" || echo "none found"
+find_code_files -exec grep -n "localhost:\|127\.0\.0\.1\|/home/\|/Users/\|C:\\\\" {} + 2>/dev/null | grep -vi "test\|spec\|README" || echo "  none found"
 
 echo ""
 echo "=== Security audit complete ==="
