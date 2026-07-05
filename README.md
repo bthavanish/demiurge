@@ -1,10 +1,18 @@
 # demiurge
 
+![demiurge](assets/demiurge.png)
+
 All-in-one AI skill for building, auditing, critiquing, and hardening code. Combines senior-dev laziness, token-efficient output, human-like writing, frontend design critique, and strict coding standards into one unified workflow.
 
 ## Install
 
-### Claude Code
+### Via Skills CLI (Recommended)
+
+```bash
+npx skills add thavanish-brijesh/demiurge
+```
+
+### Claude Code (Plugin)
 
 ```bash
 /plugin marketplace add thavanish-brijesh/demiurge
@@ -18,7 +26,7 @@ Then:
 
 ### Manual
 
-Clone this repo and copy `SKILL.md` and `references/` into your skill directory.
+Clone this repo and copy `skills/demiurge/` into your agent's skills directory.
 
 ## Usage
 
@@ -97,56 +105,92 @@ Every mode applies these non-negotiable rules:
 
 ```
 demiurge/
-├── SKILL.md                          # Main skill definition (v2.5.0)
 ├── README.md                         # This file
 ├── LICENSE                           # MIT
+├── skills-lock.json                  # Skills lock file
+├── skill/                            # Canonical source (single source of truth)
+│   ├── SKILL.src.md                  # Main skill definition (v2.5.0)
+│   ├── references/
+│   │   ├── iamstupid.md              # Auto-routing from natural language
+│   │   ├── ui/                       # UI-only references
+│   │   ├── build/
+│   │   ├── backend/
+│   │   ├── general/
+│   │   ├── standards/
+│   │   ├── management/
+│   │   ├── security/                 # Security analysis references
+│   │   ├── review/                   # Code review references
+│   │   ├── testing/                  # Testing methodology references
+│   │   ├── analysis/                 # Static analysis references
+│   │   ├── tooling/                  # Development tooling references
+│   │   ├── methodology/              # Audit process references
+│   │   └── domains/                  # Specialized domain references
+│   └── scripts/
+│       ├── audit/                    # Language-specific audit scripts
+│       ├── lint/
+│       ├── test/
+│       ├── security/
+│       └── compress/
 ├── .claude-plugin/
+│   ├── marketplace.json              # Claude Code marketplace manifest
 │   └── plugin.json                   # Claude Code plugin manifest
 ├── .claude/                          # Claude Code adapter
-│   └── skills/demiurge/SKILL.md
+│   └── skills/demiurge/
+│       ├── SKILL.md
+│       ├── references/
+│       └── scripts/
 ├── .opencode/                        # OpenCode adapter
-│   └── skills/demiurge/SKILL.md
+│   └── skills/demiurge/
+│       ├── SKILL.md
+│       ├── references/
+│       └── scripts/
 ├── .cursor/                          # Cursor adapter
-│   └── skills/demiurge/SKILL.md
+│   └── skills/demiurge/
+│       ├── SKILL.md
+│       ├── references/
+│       └── scripts/
 ├── .agents/                          # Generic/OpenAI adapter
-│   └── skills/demiurge/SKILL.md
+│   └── skills/demiurge/
+│       ├── SKILL.md
+│       ├── references/
+│       └── scripts/
 ├── .gemini/                          # Google Gemini adapter
-│   └── skills/demiurge/SKILL.md
-├── .kiro/                            # AWS Kiro adapter
-│   └── skills/demiurge/SKILL.md
+│   └── skills/demiurge/
+│       ├── SKILL.md
+│       ├── references/
+│       └── scripts/
+├── .kiro/                            # Kiro CLI adapter
+│   └── skills/demiurge/
+│       ├── SKILL.md
+│       ├── references/
+│       └── scripts/
 ├── .trae/                            # Trae adapter
-│   └── skills/demiurge/SKILL.md
+│   └── skills/demiurge/
+│       ├── SKILL.md
+│       ├── references/
+│       └── scripts/
 ├── .trae-cn/                         # Trae CN adapter
-│   └── skills/demiurge/SKILL.md
+│   └── skills/demiurge/
+│       ├── SKILL.md
+│       ├── references/
+│       └── scripts/
 ├── .codex/                           # OpenAI Codex hooks
 │   └── hooks.json
 ├── .pi/                              # Pi adapter
-│   └── skills/demiurge/SKILL.md
+│   └── skills/demiurge/
+│       ├── SKILL.md
+│       ├── references/
+│       └── scripts/
 ├── .qoder/                           # Qoder adapter
-│   └── skills/demiurge/SKILL.md
-├── .rovodev/                         # Rovo Dev (Atlassian) adapter
-│   └── skills/demiurge/SKILL.md
-├── references/
-│   ├── iamstupid.md                  # Auto-routing from natural language
-│   ├── ui/                           # UI-only references
-│   ├── build/
-│   ├── backend/
-│   ├── general/
-│   ├── standards/
-│   ├── management/
-│   ├── security/                     # Security analysis references
-│   ├── review/                       # Code review references
-│   ├── testing/                      # Testing methodology references
-│   ├── analysis/                     # Static analysis references
-│   ├── tooling/                      # Development tooling references
-│   ├── methodology/                  # Audit process references
-│   └── domains/                      # Specialized domain references
-└── scripts/
-    ├── audit/                        # Language-specific audit scripts
-    ├── lint/
-    ├── test/
-    ├── security/
-    └── compress/
+│   └── skills/demiurge/
+│       ├── SKILL.md
+│       ├── references/
+│       └── scripts/
+└── .rovodev/                         # Rovo Dev (Atlassian) adapter
+    └── skills/demiurge/
+        ├── SKILL.md
+        ├── references/
+        └── scripts/
 ```
 
 ## Credits
