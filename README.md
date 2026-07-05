@@ -11,13 +11,13 @@ All-in-one AI skill for building, auditing, critiquing, and hardening code. Comb
 ### Via Skills CLI (Recommended)
 
 ```bash
-npx skills add thavanish-brijesh/demiurge
+npx skills add bthavanish/demiurge
 ```
 
 ### Claude Code (Plugin)
 
 ```bash
-/plugin marketplace add thavanish-brijesh/demiurge
+/plugin marketplace add bthavanish/demiurge
 ```
 
 Then:

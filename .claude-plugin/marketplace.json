@@ -17,7 +17,7 @@
       },
       "source": "./.claude",
       "category": "code-quality",
-      "homepage": "https://github.com/thavanish-brijesh/demiurge",
+      "homepage": "https://github.com/bthavanish/demiurge",
       "tags": ["security", "audit", "code-review", "humanizer", "coding-standards", "hardening", "critique"]
     }
   ]
