@@ -8,5 +8,5 @@
   "license": "MIT",
   "repository": "https://github.com/thavanish-brijesh/demiurge",
   "homepage": "https://github.com/thavanish-brijesh/demiurge",
-  "skills": "./.claude/skills/"
+  "skills": "./skills/"
 }
