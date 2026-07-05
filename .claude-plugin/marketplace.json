@@ -1,0 +1,39 @@
+{
+  "$schema": "https://anTHropic.com/claude-code/marketplace.schema.json",
+  "name": "demiurge",
+  "owner": {
+    "name": "Thavanish brijesh"
+  },
+  "plugins": [
+    {
+      "name": "demiurge",
+      "source": ".",
+      "description": "All-in-one skill for building, auditing, critiquing, and hardening code. 17 modes covering full-stack development, security auditing, UI critique, and code quality.",
+      "version": "2.5.0",
+      "author": {
+        "name": "Thavanish brijesh"
+      },
+      "homepage": "https://github.com/thavanish-brijesh/demiurge",
+      "repository": "https://github.com/thavanish-brijesh/demiurge",
+      "license": "MIT",
+      "keywords": [
+        "security",
+        "audit",
+        "code-review",
+        "humanizer",
+        "material-design",
+        "coding-standards",
+        "senior-dev",
+        "caveman",
+        "ponytail",
+        "hardening",
+        "critique",
+        "frontend",
+        "backend",
+        "fullstack"
+      ],
+      "category": "code-quality",
+      "skills": ["./.claude/skills/demiurge"]
+    }
+  ]
+}
